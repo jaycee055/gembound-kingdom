@@ -1,0 +1,89 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "index.html"
+      - "privacy.html"
+      - "android-app/**"
+      - ".github/workflows/android.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD || 'gembound-free-2026' }}
+      KEY_ALIAS: gembound
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Install Capacitor
+        working-directory: android-app
+        run: npm install
+
+      - name: Prepare web files
+        working-directory: android-app
+        run: |
+          rm -rf www && mkdir -p www/icons
+          cp ../index.html ../privacy.html ../manifest.webmanifest www/
+          cp ../icons/*.png www/icons/
+          grep -q "Gembound Kingdom" www/index.html
+
+      - name: Add Android platform
+        working-directory: android-app
+        run: |
+          npx cap add android
+          MANIFEST=android/app/src/main/AndroidManifest.xml
+          sed -i 's#<uses-permission android:name="android.permission.INTERNET" />#<uses-permission android:name="android.permission.INTERNET" />\n    <uses-permission android:name="android.permission.VIBRATE" />#' $MANIFEST
+          grep -q VIBRATE $MANIFEST
+          GRADLE=android/app/build.gradle
+          sed -i "s/versionCode [0-9]*/versionCode ${{ github.run_number }}/" $GRADLE
+          sed -i "s/versionName \"[^\"]*\"/versionName \"1.0.${{ github.run_number }}\"/" $GRADLE
+          grep -E "versionCode|versionName" $GRADLE
+
+      - name: Generate icons and splash
+        working-directory: android-app
+        continue-on-error: true
+        run: npx @capacitor/assets generate --android --iconBackgroundColor '#2a1a5a' --iconBackgroundColorDark '#140c34' --splashBackgroundColor '#2a1a5a' --splashBackgroundColorDark '#140c34'
+
+      - name: Build release APK
+        working-directory: android-app
+        run: |
+          npx cap sync android
+          cd android
+          chmod +x gradlew
+          ./gradlew --no-daemon assembleRelease
+
+      - name: Sign APK
+        working-directory: android-app
+        run: |
+          BT=$(ls -d $ANDROID_HOME/build-tools/* | sort -V | tail -1)
+          IN=$(ls android/app/build/outputs/apk/release/*.apk | head -1)
+          $BT/zipalign -f -p 4 "$IN" aligned.apk
+          $BT/apksigner sign --ks release.keystore --ks-key-alias "$KEY_ALIAS" --ks-pass env:KEYSTORE_PASSWORD --key-pass env:KEYSTORE_PASSWORD --out ../GemboundKingdom.apk aligned.apk
+          $BT/apksigner verify --print-certs ../GemboundKingdom.apk
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: android-v1.0.${{ github.run_number }}
+          name: Gembound Kingdom 1.0.${{ github.run_number }} (Android)
+          body: |
+            Download **GemboundKingdom.apk** below and open it on your Android phone to install.
+            Updates install over the old version and keep your progress.
+          make_latest: true
+          files: GemboundKingdom.apk

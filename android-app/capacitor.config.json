@@ -1,0 +1,8 @@
+{
+  "appId": "io.github.jaycee055.gemboundkingdom",
+  "appName": "Gembound Kingdom",
+  "webDir": "www",
+  "backgroundColor": "#2a1a5a",
+  "android": { "backgroundColor": "#2a1a5a" },
+  "ios": { "backgroundColor": "#2a1a5a", "contentInset": "never" }
+}

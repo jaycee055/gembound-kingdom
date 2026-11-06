@@ -1,0 +1,78 @@
+name: Build iPhone app
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "index.html"
+      - "android-app/**"
+      - ".github/workflows/ios.yml"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-15
+    env:
+      HAS_APPLE: ${{ secrets.ASC_KEY_P8 != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select newest Xcode
+        run: sudo xcode-select -s "$(ls -d /Applications/Xcode*.app | sort -V | tail -1)" && xcodebuild -version
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Capacitor
+        working-directory: android-app
+        run: npm install
+
+      - name: Prepare web files
+        working-directory: android-app
+        run: |
+          rm -rf www && mkdir -p www/icons
+          cp ../index.html ../privacy.html ../manifest.webmanifest www/
+          cp ../icons/*.png www/icons/
+
+      - name: Add iOS platform
+        working-directory: android-app
+        run: |
+          npx cap add ios
+          PL=ios/App/App/Info.plist
+          /usr/libexec/PlistBuddy -c "Add :ITSAppUsesNonExemptEncryption bool false" $PL || true
+          /usr/libexec/PlistBuddy -c "Add :UIFileSharingEnabled bool true" $PL || true
+          /usr/libexec/PlistBuddy -c "Add :LSSupportsOpeningDocumentsInPlace bool true" $PL || true
+          /usr/libexec/PlistBuddy -c "Add :NSPhotoLibraryAddUsageDescription string 'Save your game backup file.'" $PL || true
+          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString 1.0.${{ github.run_number }}" $PL || true
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion ${{ github.run_number }}" $PL || true
+
+      - name: Generate icons and splash
+        working-directory: android-app
+        continue-on-error: true
+        run: npx @capacitor/assets generate --ios --iconBackgroundColor '#2a1a5a' --splashBackgroundColor '#2a1a5a' --splashBackgroundColorDark '#140c34'
+
+      - name: Sync
+        working-directory: android-app
+        run: npx cap sync ios
+
+      - name: Compile check (no Apple account needed)
+        if: env.HAS_APPLE != 'true'
+        working-directory: android-app/ios/App
+        run: |
+          xcodebuild -project App.xcodeproj -scheme App -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build | tail -20
+
+      - name: Archive and upload to TestFlight
+        if: env.HAS_APPLE == 'true'
+        working-directory: android-app/ios/App
+        env:
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          mkdir -p ~/keys && echo "$ASC_KEY_P8" > ~/keys/AuthKey.p8
+          AUTH="-allowProvisioningUpdates -authenticationKeyPath $HOME/keys/AuthKey.p8 -authenticationKeyID $ASC_KEY_ID -authenticationKeyIssuerID $ASC_ISSUER_ID"
+          xcodebuild -project App.xcodeproj -scheme App -configuration Release -archivePath $RUNNER_TEMP/App.xcarchive -destination 'generic/platform=iOS' DEVELOPMENT_TEAM=$APPLE_TEAM_ID CODE_SIGN_STYLE=Automatic $AUTH archive | tail -20
+          printf '<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0"><dict><key>method</key><string>app-store-connect</string><key>destination</key><string>upload</string><key>teamID</key><string>%s</string></dict></plist>\n' "$APPLE_TEAM_ID" > ExportOptions.plist
+          xcodebuild -exportArchive -archivePath $RUNNER_TEMP/App.xcarchive -exportOptionsPlist ExportOptions.plist -exportPath $RUNNER_TEMP/export $AUTH | tail -20
