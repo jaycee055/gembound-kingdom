@@ -35,6 +35,7 @@ build.py                inlines src/ into index.html
 tools/                  levels.js (bot simulation of every level), icon.py
 manifest.webmanifest    installable web app
 sw.js                   offline support
+img/                    painted game sprites (gems, power-ups, obstacles, boosters, chests, portraits)
 privacy.html            privacy policy + terms
 android-app/            Capacitor wrapper (APK + iPhone)
 .github/workflows/      android.yml (builds & publishes the APK), ios.yml

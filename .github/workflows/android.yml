@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "index.html"
+      - "img/**"
       - "privacy.html"
       - "android-app/**"
       - ".github/workflows/android.yml"
@@ -38,9 +39,10 @@ jobs:
       - name: Prepare web files
         working-directory: android-app
         run: |
-          rm -rf www && mkdir -p www/icons
+          rm -rf www && mkdir -p www/icons www/img
           cp ../index.html ../privacy.html ../manifest.webmanifest www/
           cp ../icons/*.png www/icons/
+          cp ../img/*.webp www/img/
           grep -q "Gembound Kingdom" www/index.html
 
       - name: Add Android platform

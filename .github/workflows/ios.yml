@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "index.html"
+      - "img/**"
       - "android-app/**"
       - ".github/workflows/ios.yml"
   workflow_dispatch:
@@ -31,9 +32,10 @@ jobs:
       - name: Prepare web files
         working-directory: android-app
         run: |
-          rm -rf www && mkdir -p www/icons
+          rm -rf www && mkdir -p www/icons www/img
           cp ../index.html ../privacy.html ../manifest.webmanifest www/
           cp ../icons/*.png www/icons/
+          cp ../img/*.webp www/img/
 
       - name: Add iOS platform
         working-directory: android-app

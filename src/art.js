@@ -196,5 +196,38 @@ function crystalSvg() { return `<svg viewBox="0 0 40 40" class="ico"><path d="M8
 function heartSvg() { return `<svg viewBox="0 0 40 40" class="ico"><path d="M20 35 C8 26 3 19 4 12 C5 6 11 3 15 4 C17 5 19 6 20 9 C21 6 23 5 25 4 C29 3 35 6 36 12 C37 19 32 26 20 35Z" fill="#ff3a5a" stroke="#8a0a2a" stroke-width="2.5"/><ellipse cx="13" cy="12" rx="4" ry="2.5" fill="#fff" opacity=".7"/></svg>`; }
 function starSvg(on) { return `<svg viewBox="0 0 40 40" class="ico star ${on ? "on" : "off"}"><path d="M20 3 l5 11 12 1 -9 8 3 12 -11 -6 -11 6 3 -12 -9 -8 12 -1Z" fill="${on ? "url(#gGold)" : "#5a5f8a"}" stroke="${on ? "#8a5a10" : "#3a3f6a"}" stroke-width="2.5" stroke-linejoin="round"/></svg>`; }
 
-root.GKArt = { defs, gem, obstacle, relic, PRINCE, CAT, castleScene, GEM_COL, coinSvg, crystalSvg, heartSvg, starSvg, bossArt };
+
+/* ---------- painted sprites (img/*.webp) ---------- */
+const pic = (n, cls = "") => `<img class="gsvg gpic ${cls}" src="img/${n}.webp" alt="" draggable="false">`;
+const SPN = { bh: "sp_bh", bv: "sp_bv", core: "sp_core", orb: "sp_orb", spark: "sp_spark", star: "sp_star" };
+function gemP(color, sp) {
+  if (color === -2) return pic("relic", "relic");
+  if (sp) return pic(SPN[sp] || "sp_star", "sp-" + sp) + (color >= 0 && sp !== "orb" && sp !== "star" ? `<span class="spc" style="background:${GEM_COL[color][1]}"></span>` : "");
+  return pic("gem" + color) + `<span class="glyph">${GLYPH[color]}</span>`;
+}
+function obstacleP(type, hp, max) {
+  const badge = n => `<span class="obhp">${n}</span>`;
+  switch (type) {
+    case "stone": return pic(hp === 1 && max > 1 ? "ob_stone2" : "ob_stone", hp >= 3 ? "tint3" : "") + (hp > 1 ? badge(hp) : "");
+    case "chest": return pic(hp < max ? "ob_chest2" : "ob_chest");
+    case "lock": return pic("ob_lock", "ovl") + (hp > 1 ? badge(hp) : "");
+    case "cage": return pic("ob_cage", "ovl");
+    case "resin": return pic("ob_resin", "ovl");
+    case "vine": return pic("ob_vine");
+    case "shadow": return pic("ob_shadow", "pulse");
+    case "ice": return pic("ob_ice");
+    case "portal": return pic("ob_portal");
+  }
+  return "";
+}
+const CHEST_PIC = { wooden: "ch_wooden", silver: "ch_silver", golden: "ch_golden", crystal: "ch_crystal", legendary: "ch_legendary", open: "ch_open" };
+const BOOST_PIC = { hammer: "bo_hammer", saber: "bo_saber", bomb: "bo_bomb", prism: "bo_prism", shuffle: "bo_shuffle", moves5: "bo_moves5", pre_beam: "sp_bh", pre_core: "sp_core", pre_orb: "sp_orb" };
+const chestPic = (t, cls = "") => pic(CHEST_PIC[t] || "ch_golden", cls);
+const boostPic = (id, cls = "") => pic(BOOST_PIC[id] || "bo_hammer", cls);
+const portrait = (who, mood, cls = "") => pic(who === "lumi" ? (mood === "surprised" ? "cat_surprised" : "cat_happy") : ({ worried: "pr_worried", cheer: "pr_cheer" }[mood] || "pr_happy"), cls);
+const heartPic = () => pic("heart", "ico");
+const ALL_PICS = ["gem0","gem1","gem2","gem3","gem4","gem5","sp_bh","sp_bv","sp_core","sp_orb","sp_spark","sp_star","ob_stone","ob_stone2","ob_cage","ob_lock","ob_resin","ob_ice","ob_vine","ob_chest","ob_chest2","ob_shadow","ob_portal","relic","pr_happy","pr_worried","pr_cheer","cat_happy","cat_surprised","heart"];
+function preload() { ALL_PICS.forEach(n => { const i = new Image(); i.src = `img/${n}.webp`; }); }
+
+root.GKArt = { defs, gem: gemP, obstacle: obstacleP, relic: () => pic("relic", "relic"), svgGem: gem, pic, chestPic, boostPic, portrait, heartPic, preload, PRINCE, CAT, castleScene, GEM_COL, coinSvg, crystalSvg, heartSvg, starSvg, bossArt };
 })(typeof window !== "undefined" ? window : globalThis);

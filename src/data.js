@@ -27,7 +27,7 @@ const DIFF = [
   { name: "Normal", color: "#39A879", f: 1.3 },
   { name: "Challenging", color: "#2859A8", f: 1.15 },
   { name: "Hard", color: "#EF826F", f: 1.15 },
-  { name: "Super Hard", color: "#8866C8", f: 1.08 },
+  { name: "Super Hard", color: "#8866C8", f: 1.16 },
   { name: "Legendary", color: "#F4C75E", f: 1.0 },
 ];
 const BOSSES = [
@@ -133,7 +133,7 @@ function makeLevel(n) {
   const treasure = i === 12;
   if (treasure) pick = ["chest"].concat(pick.filter(x => x !== "chest").slice(0, 1));
   for (const t of pick) {
-    if (t === "relic") { relicN = 2 + Math.min(2, Math.floor(region / 3) + (d >= 2 ? 1 : 0)); work += relicN * 4; continue; }
+    if (t === "relic") { relicN = 2 + Math.min(2, Math.floor(region / 3) + (d >= 2 ? 1 : 0)); work += relicN * 6; continue; }
     const L = layerOf(t);
     let count = Math.round(({ cage: 6, ice: 10, stone: 6, chest: 4, resin: 6, lock: 5, vine: 3, portal: 6, shadow: 4 }[t] || 5) * scale);
     if (treasure && t === "chest") count = 10;

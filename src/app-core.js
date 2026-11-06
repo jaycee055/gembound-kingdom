@@ -114,12 +114,12 @@ function grant(r, why) {
   if (r.coins) { addCoins(r.coins); shown.push({ ico: A.coinSvg(), n: "+" + fmt(r.coins) }); }
   if (r.crystals) { S.crystals += r.crystals; shown.push({ ico: A.crystalSvg(), n: "+" + r.crystals }); }
   const bl = r.booster ? [].concat(r.booster) : [];
-  for (const b of bl) { S.boosters[b] = (S.boosters[b] || 0) + 1; logBooster(b, +1, why); shown.push({ e: D.BOOSTERS[b].icon, n: "+1" }); }
-  if (r.boosters) for (const b in r.boosters) { S.boosters[b] = (S.boosters[b] || 0) + r.boosters[b]; logBooster(b, r.boosters[b], why); shown.push({ e: D.BOOSTERS[b].icon, n: "+" + r.boosters[b] }); }
+  for (const b of bl) { S.boosters[b] = (S.boosters[b] || 0) + 1; logBooster(b, +1, why); shown.push({ ico: A.boostPic(b, "ico"), n: "+1" }); }
+  if (r.boosters) for (const b in r.boosters) { S.boosters[b] = (S.boosters[b] || 0) + r.boosters[b]; logBooster(b, r.boosters[b], why); shown.push({ ico: A.boostPic(b, "ico"), n: "+" + r.boosters[b] }); }
   const lv = r.life || r.lives;
-  if (lv) { S.lives = Math.min(MAX_LIVES + 5, S.lives + lv); shown.push({ ico: A.heartSvg(), n: "+" + lv }); }
+  if (lv) { S.lives = Math.min(MAX_LIVES + 5, S.lives + lv); shown.push({ ico: A.heartPic(), n: "+" + lv }); }
   if (r.unlimited) { S.unlimitedUntil = Math.max(Date.now(), S.unlimitedUntil) + r.unlimited * 60000; shown.push({ e: "♾️", n: r.unlimited + "m" }); }
-  if (r.chest) { shown.push({ e: D.CHESTS[r.chest].icon, n: D.CHESTS[r.chest].name }); queueChest(r.chest); }
+  if (r.chest) { shown.push({ ico: A.chestPic(r.chest, "ico"), n: D.CHESTS[r.chest].name }); queueChest(r.chest); }
   if (r.item) { if (unlockItem(r.item, why)) shown.push({ e: itemById(r.item).icon, n: "New!" }); }
   save(); refreshTop();
   return shown;
@@ -133,7 +133,7 @@ function rewardText(r) {
   if (r.item) p.push(itemById(r.item).name);
   return p.join(" + ");
 }
-function rewardIcon(r) { if (r.chest) return D.CHESTS[r.chest].icon; if (r.crystals) return "💎"; if (r.booster) return D.BOOSTERS[[].concat(r.booster)[0]].icon; if (r.item) return itemById(r.item).icon; return "🪙"; }
+function rewardIcon(r) { if (r.chest) return A.chestPic(r.chest, "ri"); if (r.crystals) return A.crystalSvg().replace('class="ico"', 'class="ico ri"'); if (r.booster) return A.boostPic([].concat(r.booster)[0], "ri"); if (r.item) return itemById(r.item).icon; return A.coinSvg().replace('class="ico"', 'class="ico ri"'); }
 function logBooster(id, n, why) { S.boosterLog.unshift({ id, n, why: why || "", at: Date.now() }); S.boosterLog.length = Math.min(S.boosterLog.length, 60); }
 async function spend(cur, amount, what) {
   const have = cur === "coins" ? S.coins : S.crystals;
@@ -225,11 +225,11 @@ async function openChests() {
     S.stats.chests++;
     const r = rollChest(type);
     await new Promise(res => {
-      const m = modal({ title: C.name, html: `<div class="chestbig">${C.icon}</div><p style="text-align:center" class="muted">Opening…</p>`, buttons: [], noClose: true });
+      const m = modal({ title: C.name, html: `<div class="chestbig">${A.chestPic(type)}</div><p style="text-align:center" class="muted">Opening…</p>`, buttons: [], noClose: true });
       setTimeout(() => {
         SND.play("reward");
         const shown = grant(r, C.name);
-        m.set(`<div class="chestbig open">✨${C.icon}✨</div>${rewardHTML(shown)}<p class="muted" style="text-align:center"><a href="#" data-odds="${type}" style="color:#fff3c8">See drop rates</a></p>`, [{ label: "Collect", cls: "gold", onClick: () => { m.close(); res(); } }]);
+        m.set(`<div class="chestbig open">${A.chestPic("open")}</div>${rewardHTML(shown)}<p class="muted" style="text-align:center"><a href="#" data-odds="${type}" style="color:#fff3c8">See drop rates</a></p>`, [{ label: "Collect", cls: "gold", onClick: () => { m.close(); res(); } }]);
         $("[data-odds]", m.el).onclick = e => { e.preventDefault(); showOdds(type); };
       }, S.settings.quick || S.settings.reducedMotion ? 300 : 1500);
     });
@@ -239,7 +239,7 @@ async function openChests() {
 function showOdds(type) {
   const C = D.CHESTS[type]; const total = C.table.reduce((a, r) => a + r[2], 0);
   const names = { coins: "Coins", booster: "Booster(s)", life: "Lives", crystals: "Crystals", card: "Collection card", unlimited: "Unlimited lives (min)" };
-  modal({ title: C.icon + " " + C.name, html: `<div class="inner"><p><b>${C.rolls} rewards</b> per chest. Each reward is rolled independently:</p>${C.table.map(([k, v, w]) => `<div class="row"><span class="grow">${names[k]} ×${v}</span><b>${Math.round(w / total * 100)}%</b></div>`).join("")}<p class="muted">Collection cards only drop items you don't own yet; if you own them all you get 100 coins instead. Chests are never sold for real money.</p></div>` });
+  modal({ title: C.name, html: `<div class="inner"><p><b>${C.rolls} rewards</b> per chest. Each reward is rolled independently:</p>${C.table.map(([k, v, w]) => `<div class="row"><span class="grow">${names[k]} ×${v}</span><b>${Math.round(w / total * 100)}%</b></div>`).join("")}<p class="muted">Collection cards only drop items you don't own yet; if you own them all you get 100 coins instead. Chests are never sold for real money.</p></div>` });
 }
 
 /* ---------------- inbox ---------------- */

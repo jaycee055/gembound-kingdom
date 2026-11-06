@@ -50,7 +50,7 @@ function refreshTop() {
     <span class="nm"><b>${esc(S.name)}</b><span class="xpbar"><i style="width:${Math.min(100, S.xp / need * 100)}%"></i><span>${fmt(S.xp)} / ${fmt(need)}</span></span></span></button>
     <button class="pill" data-nav="shop" aria-label="Coins ${S.coins}">${A.coinSvg()}<span class="val">${fmt(S.coins)}</span><span class="plus">+</span></button>
     <button class="pill" data-nav="shop" aria-label="Crystals ${S.crystals}">${A.crystalSvg()}<span class="val">${fmt(S.crystals)}</span><span class="plus">+</span></button>
-    <button class="pill lives" id="livesPill" aria-label="Lives">${A.heartSvg()}<span class="val">${unlimited() ? "∞" : S.lives}</span><span class="sub">${unlimited() ? dur(S.unlimitedUntil - Date.now()) : S.lives >= MAX_LIVES ? t("Full") : dur(nextLifeIn())}</span></button>
+    <button class="pill lives" id="livesPill" aria-label="Lives">${A.heartPic()}<span class="val">${unlimited() ? "∞" : S.lives}</span><span class="sub">${unlimited() ? dur(S.unlimitedUntil - Date.now()) : S.lives >= MAX_LIVES ? t("Full") : dur(nextLifeIn())}</span></button>
     <button class="gear" data-nav="settings" aria-label="${t("Settings")}">⚙️</button>`;
   $("#livesPill").onclick = () => { SND.play("click"); showLives(); };
   refreshBadges();
@@ -83,35 +83,42 @@ function showLives() {
 let partsBuilt = false;
 function renderHome() {
   ensureMissions();
-  const R = D.REGIONS[Math.min(D.REGIONS.length - 1, Math.floor((Math.min(S.level, D.MAX_LEVEL) - 1) / D.PER_REGION))];
+  const lvl = Math.min(S.level, D.MAX_LEVEL);
+  const R = D.REGIONS[Math.floor((lvl - 1) / D.PER_REGION)];
+  const ri = D.REGIONS.indexOf(R);
   const sky = D.BACKGROUND_SKY[S.bg] || D.BACKGROUND_SKY.bg_garden;
   const el = $("#scr-home");
-  const ri = D.REGIONS.indexOf(R);
   const kp = kingdomPct(ri);
   const done = S.level > D.MAX_LEVEL;
-  el.innerHTML = `${A.castleScene(sky)}<div class="particles">${Array.from({ length: 14 }, (_, i) => `<i style="left:${(i * 37) % 100}%;top:${50 + (i * 23) % 45}%;animation-delay:${(i * 0.53) % 7}s"></i>`).join("")}</div>
+  const L = D.makeLevel(lvl), dc = D.DIFF[L.difficulty];
+  const evs = D.activeEvents();
+  const ev = evs.find(e => !e.tournament), tour = evs.find(e => e.tournament);
+  const ds = dailyStatus();
+  const mDone = S.missions.daily.filter(m => !m.claimed).length;
+  el.innerHTML = `${A.castleScene(sky)}<div class="particles">${Array.from({ length: 14 }, (_, i) => `<i style="left:${(i * 37) % 100}%;top:${40 + (i * 23) % 50}%;animation-delay:${(i * 0.53) % 7}s"></i>`).join("")}</div>
   <div class="home-wrap">
-    <div class="logo"><span class="crown">👑</span><h1>Gembound<br>Kingdom</h1></div>
+    <div class="logo"><h1>Gembound<br>Kingdom</h1></div>
     <div class="home-mid">
       <div class="side">
-        ${rb("inbox", "✉️", "Inbox")}${rb("daily", "🎁", "Daily Rewards")}${rb("events", "🎪", "Events")}${rb("tournament", "🏆", "Tournament")}
+        ${rb("inbox", "✉️", "Inbox")}${rb("daily", A.pic("ch_golden"), "Daily", ds.can ? "Ready!" : dur(nextMidnight() - Date.now()))}${rb("events", A.pic("ch_legendary"), ev.name.split(" ").slice(-1)[0], dur(ev.end - Date.now()))}${rb("tournament", "🏆", "Tournament", dur(tour.end - Date.now()))}
       </div>
-      <div class="stage">${A.PRINCE}${A.CAT}${S.pet ? `<span class="pet">${itemById(S.pet).icon}</span>` : ""}
-        <div class="playbig"><button class="playbtn" data-nav="play"><b data-i18n="Play">${t("Play")}</b><span>${done ? "All levels complete!" : t("Level") + " " + fmt(S.level)}</span></button></div>
+      <div class="stage">
+        <div class="hero">${A.portrait("prince", S.stats.streak >= 3 ? "cheer" : "happy", "hp")}${A.portrait("lumi", "happy", "hc")}${S.pet ? `<span class="pet">${itemById(S.pet).icon}</span>` : ""}</div>
       </div>
       <div class="side">
-        ${rb("missions", "📜", "Missions")}${rb("collection", "📖", "Collection")}${rb("achievements", "🎖️", "Achievements")}${rb("friends", "👥", "Friends")}
+        ${rb("missions", "📜", "Missions", mDone ? mDone + " left" : "Done!")}${rb("collection", "📖", "Collection")}${rb("achievements", "🎖️", "Awards")}${rb("modes", A.pic("sp_star"), "Challenges")}
       </div>
     </div>
-    <div class="panel"><h3>📜 <span data-i18n="Daily Missions">${t("Daily Missions")}</span><span class="tm" id="mTimer">⏱ ${dur(nextMidnight() - Date.now())}</span></h3>
-      <div class="mcards">${S.missions.daily.map((m, i) => { const I = missionInfo(m, D.DAILY_POOL); return `<button class="mcard ${I.done ? "done" : ""}" data-nav="missions"><span class="t"><i>${I.def.icon}</i>${esc(I.def.text)}</span>${m.claimed ? bar(1, "✔ Claimed") : bar(I.prog / I.def.n, I.done ? "Claim!" : `${fmt(I.prog)}/${fmt(I.def.n)}`)}</button>`; }).join("")}</div></div>
-    <div class="panel kprog" data-nav="kingdom" role="button" tabindex="0"><span class="ki">🏰</span><span class="kt"><b data-i18n="Kingdom Progress">${t("Kingdom Progress")}</b><small>${R.icon} ${R.name}</small>${bar(kp, Math.round(kp * 100) + "%")}</span><span class="circ">›</span></div>
+    <div class="homeplay">
+      <button class="kstrip" data-nav="kingdom"><span class="ki">${R.icon}</span><span class="kt"><b>${R.name}</b>${bar(kp, Math.round(kp * 100) + "% restored")}</span><span class="circ">›</span></button>
+      <button class="playbtn" data-nav="play"><b>${done ? "All done!" : t("Level") + " " + fmt(S.level)}</b><span style="color:${L.difficulty ? "#fff3a0" : "#fff"}">${done ? "Try Challenges" : L.boss ? "👑 Boss battle" : dc.name}</span></button>
+    </div>
   </div>
   ${installBanner()}`;
   wireInstall(el);
   refreshBadges();
 }
-function rb(id, e, l) { return `<button class="rbtn" data-nav="${id}" data-badge="${id}"><span class="ic">${e}</span><span class="lb" data-i18n="${l}">${t(l)}</span></button>`; }
+function rb(id, e, l, tm) { return `<button class="rbtn" data-nav="${id}" data-badge="${id}"><span class="ic">${e}</span><span class="lb" data-i18n="${l}">${t(l)}</span>${tm ? `<span class="tmr">${tm}</span>` : ""}</button>`; }
 function nextMidnight() { const d = new Date(); d.setHours(24, 0, 0, 0); return d.getTime(); }
 function kingdomPct(ri) {
   const start = ri * D.PER_REGION + 1;
@@ -192,7 +199,7 @@ async function levelStart(n) {
   const m = modal({ title: `${t("Level")} ${n}`, html: `<div style="text-align:center;margin:-6px 0 8px"><span class="badge" style="background:${dc.color}">${dc.name}</span> <span class="badge" style="background:#3a2670">${R.icon} ${R.name}</span>${L.treasure ? ' <span class="badge" style="background:#b8801f">🗝️ Treasure stage</span>' : ""}</div>
     <div class="inner"><b>${t("Objectives")}</b><div class="row wrap" style="justify-content:center;margin:6px 0">${objHTML}</div>
     <p class="muted" style="text-align:center">${L.boss ? `Defeat <b>${L.boss.name}</b> in ${L.moves} moves! Every gem you clear hurts it; breaking obstacles hurts more.` : `${L.moves} moves`}${S.best[n] ? ` · Best: ${"⭐".repeat(S.best[n].stars)} ${fmt(S.best[n].score)}` : ""}</p>
-    ${n >= 4 ? `<b>Pre-level boosters</b><div class="row" style="justify-content:center;gap:8px;margin-top:6px">${preIds.map(id => `<button class="tile-card" data-pre="${id}" style="width:86px" aria-pressed="false"><div class="em">${D.BOOSTERS[id].icon}</div><div class="nm">${D.BOOSTERS[id].name}</div><span class="q">${S.boosters[id] || 0}</span></button>`).join("")}</div><p class="muted" style="text-align:center">Tap to add. Used only when you press Play.</p>` : ""}</div>`,
+    ${n >= 4 ? `<b>Pre-level boosters</b><div class="row" style="justify-content:center;gap:8px;margin-top:6px">${preIds.map(id => `<button class="tile-card preb" data-pre="${id}" style="width:86px" aria-pressed="false"><div class="em">${A.boostPic(id)}</div><div class="nm">${D.BOOSTERS[id].name}</div><span class="q">${S.boosters[id] || 0}</span></button>`).join("")}</div><p class="muted" style="text-align:center">Tap to add. Used only when you press Play.</p>` : ""}</div>`,
     buttons: [{ label: `▶ ${t("Play")}`, cls: "", onClick: api => { api.close(); beginLevel(L, Object.keys(pre).filter(k => pre[k])); } }] });
   $$("[data-pre]", m.el).forEach(b => b.onclick = async () => {
     const id = b.dataset.pre;
@@ -209,9 +216,7 @@ function objIcon(o, L, rem) {
   else if (o.t === "relic") ic = A.relic();
   else if (o.t === "score") ic = `<span class="em">⭐</span>`;
   else if (o.t === "boss") ic = `<span class="em">${L.boss ? L.boss.face : "👹"}</span>`;
-  else if (o.t === "ice") ic = `<span class="em">🧊</span>`;
-  else if (o.t === "portal") ic = `<span class="em">🌀</span>`;
-  else ic = A.obstacle(o.t, o.t === "lock" ? 2 : 1, 1);
+    else ic = A.obstacle(o.t, o.t === "lock" ? 2 : 1, 1);
   let n = rem != null ? rem : o.n != null ? o.n : (L.obstacles || []).filter(x => x.t === o.t).length;
   if (o.t === "boss" && rem == null) n = L.boss.hp;
   const label = o.t === "color" ? E.GEMS[o.c] : o.t === "relic" ? "Relics" : o.t === "boss" ? "Boss HP" : (E.OBST[o.t] || { label: o.t }).label;
@@ -228,7 +233,7 @@ function story(ri, lines) {
       if (i >= lines.length) { m.close(); return; }
       const [who, txt] = lines[i];
       SND.play("voice", who === "lumi" ? 1 : 0);
-      m.set(`<div class="dlg"><div class="who">${who === "lumi" ? A.CAT : A.PRINCE}</div><div class="say"><b>${who === "lumi" ? "Lumi" : "Prince Aurelio"}</b>${esc(txt)}</div></div><p class="muted" style="text-align:center">Chapter ${ri + 1} · ${i + 1}/${lines.length}</p>`,
+      m.set(`<div class="dlg"><div class="who">${A.portrait(who, /!|\?/.test(txt) && who === "lumi" ? "happy" : "")}</div><div class="say"><b>${who === "lumi" ? "Lumi" : "Prince Aurelio"}</b>${esc(txt)}</div></div><p class="muted" style="text-align:center">Chapter ${ri + 1} · ${i + 1}/${lines.length}</p>`,
         [{ label: "Skip story", cls: "ghost", onClick: () => m.close() }, { label: i === lines.length - 1 ? "Let's go!" : "Next ›", cls: "gold", onClick: () => { i++; step(); } }]);
     };
     step();
@@ -265,8 +270,8 @@ function tabs(list, cur) { return `<div class="tabs" role="tablist">${list.map((
 
 const PAGES = {};
 PAGES.boosters = () => {
-  const inv = Object.entries(D.BOOSTERS).map(([id, b]) => `<div class="card row"><span style="font-size:40px">${b.icon}</span><div class="grow"><h4>${b.name} <span class="badge" style="background:#8866C8">×${S.boosters[id] || 0}</span></h4><p>${b.desc}</p><p class="muted">${b.kind === "pre" ? "Pre-level: pick it on the level start screen." : "In-level: tap it on the booster bar, then tap the board. Doesn't use a move."}</p></div><button class="btn sm gold" data-buy="${id}">${A.coinSvg().replace('class="ico"', 'class="ico" style="width:18px;height:18px"')} ${fmt(b.price)}</button></div>`).join("");
-  const hist = S.boosterLog.slice(0, 20).map(h => `<div class="li"><span class="e">${D.BOOSTERS[h.id].icon}</span><span class="grow"><b>${h.n > 0 ? "+" : ""}${h.n} ${D.BOOSTERS[h.id].name}</b><br><small>${esc(h.why)} · ${new Date(h.at).toLocaleString()}</small></span></div>`).join("") || `<p class="muted">No booster activity yet.</p>`;
+  const inv = Object.entries(D.BOOSTERS).map(([id, b]) => `<div class="card row"><span class="bigic">${A.boostPic(id)}</span><div class="grow"><h4>${b.name} <span class="badge" style="background:#8866C8">×${S.boosters[id] || 0}</span></h4><p>${b.desc}</p><p class="muted">${b.kind === "pre" ? "Pre-level: pick it on the level start screen." : "In-level: tap it on the booster bar, then tap the board. Doesn't use a move."}</p></div><button class="btn sm gold" data-buy="${id}">${A.coinSvg().replace('class="ico"', 'class="ico" style="width:18px;height:18px"')} ${fmt(b.price)}</button></div>`).join("");
+  const hist = S.boosterLog.slice(0, 20).map(h => `<div class="li"><span class="e">${A.boostPic(h.id)}</span><span class="grow"><b>${h.n > 0 ? "+" : ""}${h.n} ${D.BOOSTERS[h.id].name}</b><br><small>${esc(h.why)} · ${new Date(h.at).toLocaleString()}</small></span></div>`).join("") || `<p class="muted">No booster activity yet.</p>`;
   return { title: "💣 " + t("Boosters"), html: inv + `<h3>History</h3><div class="list">${hist}</div>`,
     wire: el => $$("[data-buy]", el).forEach(b => b.onclick = async () => { const id = b.dataset.buy; if (await spend("coins", D.BOOSTERS[id].price, `Buy 1 ${D.BOOSTERS[id].name}`)) { S.boosters[id] = (S.boosters[id] || 0) + 1; logBooster(id, 1, "Bought in shop"); save(); SND.play("coin"); renderPage(); } }) };
 };
@@ -276,10 +281,10 @@ PAGES.shop = () => {
   return { title: "🛒 " + t("Shop"), html: `<div class="card dark"><p>✨ <b>No real-money purchases.</b> Everything here costs coins or crystals you earn by playing.</p></div>
     <div class="card row"><span style="font-size:40px">🎁</span><div class="grow"><h4>Free gift</h4><p>${giftReady ? "50 coins + 1 Royal Shuffle, free every 4 hours." : "Next free gift in " + dur(4 * 3600e3 - (Date.now() - S.gift))}</p></div><button class="btn sm" id="gift" ${giftReady ? "" : "disabled"}>Claim</button></div>
     <h3>Lives</h3>
-    <div class="card row"><span style="font-size:36px">❤️</span><div class="grow"><h4>Refill lives</h4><p>Back to 5 lives.</p></div><button class="btn sm gold" data-sh="refill">12 💎</button></div>
+    <div class="card row"><span class="bigic">${A.heartPic()}</span><div class="grow"><h4>Refill lives</h4><p>Back to 5 lives.</p></div><button class="btn sm gold" data-sh="refill">12 💎</button></div>
     <div class="card row"><span style="font-size:36px">♾️</span><div class="grow"><h4>Unlimited lives · 1 hour</h4><p>Play without losing lives.</p></div><button class="btn sm gold" data-sh="unl">25 💎</button></div>
     <h3>Chests</h3>
-    ${[["wooden", 300, "coins"], ["silver", 800, "coins"], ["golden", 1600, "coins"], ["crystal", 40, "crystals"]].map(([c, p, cur]) => `<div class="card row"><span style="font-size:36px">${D.CHESTS[c].icon}</span><div class="grow"><h4>${D.CHESTS[c].name}</h4><p>${D.CHESTS[c].rolls} rewards · <a href="#" data-odds="${c}">drop rates</a></p></div><button class="btn sm gold" data-chest="${c}" data-p="${p}" data-cur="${cur}">${fmt(p)} ${cur === "coins" ? "🪙" : "💎"}</button></div>`).join("")}
+    ${[["wooden", 300, "coins"], ["silver", 800, "coins"], ["golden", 1600, "coins"], ["crystal", 40, "crystals"]].map(([c, p, cur]) => `<div class="card row"><span class="bigic">${A.chestPic(c)}</span><div class="grow"><h4>${D.CHESTS[c].name}</h4><p>${D.CHESTS[c].rolls} rewards · <a href="#" data-odds="${c}">drop rates</a></p></div><button class="btn sm gold" data-chest="${c}" data-p="${p}" data-cur="${cur}">${fmt(p)} ${cur === "coins" ? "🪙" : "💎"}</button></div>`).join("")}
     <h3>Exchange</h3>
     <div class="card row"><span style="font-size:36px">🪙</span><div class="grow"><h4>1,000 coins</h4><p>Swap crystals for coins.</p></div><button class="btn sm gold" data-sh="ex">10 💎</button></div>
     <h3>Cosmetics</h3>
@@ -305,9 +310,9 @@ PAGES.events = () => {
     const es = eventState(ev);
     if (ev.tournament) return `<div class="card" style="border-color:${ev.color}"><div class="row"><span style="font-size:40px">${ev.icon}</span><div class="grow"><h4>${ev.name}</h4><p>${ev.desc}</p><p class="muted">Ends in ${dur(ev.end - Date.now())}</p></div></div><button class="btn blue full" data-nav="tournament">Open tournament</button></div>`;
     const next = D.EVENT_MILESTONES.find(M => M.pts > es.pts);
-    return `<div class="card" style="border-color:${ev.color}"><div class="row"><span style="font-size:40px">${ev.icon}</span><div class="grow"><h4>${ev.name}</h4><p>${ev.desc}</p><p class="muted">⏱ Ends in ${dur(ev.end - Date.now())} · Started ${new Date(ev.start).toLocaleDateString()}</p></div><b style="font-size:22px">${es.pts}</b></div>
+    return `<div class="card" style="border-color:${ev.color}"><div class="evhero" style="background:linear-gradient(180deg,${ev.color},#3a2670)"><h3>${ev.name}</h3>${A.portrait("prince", "cheer")}${A.chestPic(ev.id === "dragon" ? "legendary" : ev.id === "treasurehunt" ? "open" : "golden")}</div><div class="row"><span style="font-size:40px">${ev.icon}</span><div class="grow"><h4>${ev.name}</h4><p>${ev.desc}</p><p class="muted">⏱ Ends in ${dur(ev.end - Date.now())} · Started ${new Date(ev.start).toLocaleDateString()}</p></div><b style="font-size:22px">${es.pts}</b></div>
       ${bar(next ? es.pts / next.pts : 1, next ? `${es.pts}/${next.pts} pts` : "All milestones reached!")}
-      <div class="mile">${D.EVENT_MILESTONES.map((M, i) => { const got = es.claimed.includes(i), ok = es.pts >= M.pts; return `<div class="m ${ok ? "ok" : ""} ${got ? "got" : ""}"><div style="font-size:24px">${rewardIcon(M.r)}</div>${M.pts} pts<br>${got ? "✔" : ok ? `<button class="btn sm" data-ms="${ev.key}|${i}">${t("Claim")}</button>` : esc(rewardText(M.r))}</div>`; }).join("")}</div>
+      <div class="track"><div class="tbar"><i style="width:${Math.min(100, es.pts / 120 * 100)}%"></i></div>${D.EVENT_MILESTONES.map((M, i) => { const got = es.claimed.includes(i), ok = es.pts >= M.pts; return `<div class="tn ${got ? "got" : ""}" style="left:${8 + M.pts / 120 * 84}%">${rewardIcon(M.r)}<div>${M.pts}</div>${got ? '<span class="ok">✅</span>' : ok ? `<button class="btn sm" data-ms="${ev.key}|${i}">${t("Claim")}</button>` : ""}</div>`; }).join("")}</div>
       <p class="muted">Rules: points come from campaign and challenge levels played while the event is live. Leaderboard: personal only in this offline version.</p></div>`;
   }).join("");
   return { title: "🎪 " + t("Events"), html: `<div class="card dark"><p>Events run on a schedule on your device: a new 3-day event every 3 days, Weekend Adventure Fri–Sun, a monthly seasonal festival and a weekly tournament.</p></div>${html}<button class="btn gold full" data-nav="modes">⚔️ ${t("Challenge Modes")}</button>`,
@@ -450,7 +455,7 @@ PAGES.help = (tab) => {
     ["⭐", "Earn stars", "Win with 30%+ moves left for ★★★, 10%+ (or 3 moves) for ★★. Spend stars on Kingdom restoration."],
     ["🗺️", "Unlock regions", "Beat the boss at level 20 of each region to open the next one. Each region brings new obstacles."],
   ];
-  const ob = Object.entries(E.OBST).map(([k, o]) => `<div class="li"><span class="e" style="width:44px">${k === "ice" ? "🧊" : k === "portal" ? "🌀" : A.obstacle(k, 1, 1)}</span><span class="grow"><b>${o.label}</b><br><small>${{ stone: "Blocks a cell. Match next to it or hit it with power-ups. Can have 1–3 layers (multi-layer crystal).", vine: "Blocks a cell and grows each turn you don't damage a vine.", chest: "Two hits from adjacent matches; drops coins.", shadow: "Only power-ups and the Royal Hammer can crack it.", cage: "Locks a gem in place. Match the caged gem to break it.", lock: "Like a cage, but needs two hits.", resin: "Sticky resin holds a gem. Match it or next to it.", ice: "Frozen floor under gems; clear gems on top (1–2 layers).", portal: "Clear a gem standing on it to activate it." }[k]}</small></span></div>`).join("") +
+  const ob = Object.entries(E.OBST).map(([k, o]) => `<div class="li"><span class="e" style="width:44px">${A.obstacle(k, 1, 1)}</span><span class="grow"><b>${o.label}</b><br><small>${{ stone: "Blocks a cell. Match next to it or hit it with power-ups. Can have 1–3 layers (multi-layer crystal).", vine: "Blocks a cell and grows each turn you don't damage a vine.", chest: "Two hits from adjacent matches; drops coins.", shadow: "Only power-ups and the Royal Hammer can crack it.", cage: "Locks a gem in place. Match the caged gem to break it.", lock: "Like a cage, but needs two hits.", resin: "Sticky resin holds a gem. Match it or next to it.", ice: "Frozen floor under gems; clear gems on top (1–2 layers).", portal: "Clear a gem standing on it to activate it." }[k]}</small></span></div>`).join("") +
     `<div class="li"><span class="e" style="width:44px">${A.relic()}</span><span class="grow"><b>Ancient Relic</b><br><small>Can't be matched. Clear gems beneath it so it falls to the bottom row to collect it.</small></span></div>`;
   const faq = [
     ["Do I need to pay?", "No. There are no real-money purchases. Coins and crystals are earned by playing."],

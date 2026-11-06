@@ -35,17 +35,17 @@ function buildGame() {
   const el = $("#scr-game");
   el.innerHTML = `<div class="gbg" style="background:linear-gradient(180deg,${R.sky[2]},${R.sky[1]} 55%,${R.ground})"></div>
   <div class="gwrap">
-    <div class="gtop">
-      <button class="gbox gpause" id="gPause" aria-label="Pause">⏸</button>
-      <div class="gbox gmoves" id="gMoves" aria-live="polite"><b>0</b><small data-i18n="Moves">${t("Moves")}</small></div>
-      <div class="gbox gobj" id="gObj" aria-label="${t("Objectives")}"></div>
+    <div class="ghead">
+      <div class="gpanel"><div class="gptitle" data-i18n="Objectives">Target</div><div class="gobj" id="gObj" aria-label="${t("Objectives")}"></div></div>
+      <div class="gportrait" id="gPortrait">${GL.boss ? `<div class="bossface">${GL.boss.face}</div>` : A.portrait("prince", "happy")}</div>
+      <div class="gpanel gmoves" id="gMoves" aria-live="polite"><div class="gptitle" data-i18n="Moves">${t("Moves")}</div><b>0</b></div>
     </div>
     <div class="gscore"><span id="gScore">0</span><div class="bar"><i id="gScoreBar"></i></div><span id="gLvl">${GL.mode ? D.MODES.find(m => m.id === GL.mode).icon : "Lv " + GL.id}</span></div>
-    ${GL.boss ? `<div class="bossbar" id="gBoss">${A.bossArt(GL.boss.face)}<div class="grow"><b style="font-size:13px">${esc(GL.boss.name)}</b><div class="bar"><i></i><span></span></div></div></div>` : ""}
+    ${GL.boss ? `<div class="bossbar" id="gBoss"><div class="grow"><b style="font-size:13px">${esc(GL.boss.name)}</b><div class="bar"><i></i><span></span></div></div></div>` : ""}
     <div class="boardwrap" id="gWrap"><div class="board" id="gBoard" role="grid" aria-label="Game board" tabindex="0"><div class="cells"></div><div class="tiles"></div><div class="fx"></div><div class="cursor"></div></div></div>
-    <div class="gboost" id="gBoost">${BOOST_BAR.map(id => `<button data-bo="${id}" aria-label="${D.BOOSTERS[id].name}">${D.BOOSTERS[id].icon}<span class="q"></span></button>`).join("")}</div>
+    <div class="gboost" id="gBoost">${BOOST_BAR.map(id => `<button data-bo="${id}" aria-label="${D.BOOSTERS[id].name}">${A.boostPic(id)}<span class="q"></span></button>`).join("")}<button class="gear2" id="gPause" aria-label="Pause">⚙️</button></div>
   </div>
-  <div class="bubble" id="gBubble">${A.CAT}<div class="say"></div></div>`;
+  <div class="bubble" id="gBubble">${A.portrait("lumi", "happy", "catp")}<div class="say"></div></div>`;
   tileEls = new Map(); obEls = new Map();
   $("#gPause").onclick = () => { SND.play("click"); pauseMenu(); };
   $$("[data-bo]").forEach(b => b.onclick = () => useBooster(b.dataset.bo));
@@ -83,7 +83,8 @@ function render(instant) {
   // floor layers
   $$(".cell", $("#gBoard")).forEach(d => {
     const [r, c] = d.dataset.rc.split(",").map(Number); const f = G.cells[r][c].floor;
-    d.classList.toggle("ice", !!f && f.type === "ice"); d.classList.toggle("ice2", !!f && f.type === "ice" && f.hp >= 2); d.classList.toggle("portal", !!f && f.type === "portal");
+    const fs = f ? f.type + f.hp : "";
+    if (d.dataset.f !== fs) { d.dataset.f = fs; d.innerHTML = f ? A.obstacle(f.type, f.hp, f.max) : ""; d.classList.toggle("ice2", !!f && f.type === "ice" && f.hp >= 2); d.classList.toggle("fl", !!f); }
   });
   G.each((x, r, c) => {
     if (x.hole) return;
@@ -106,6 +107,7 @@ function render(instant) {
       let start = r - 1; el.style.transform = pos(tt.spawn ? start : r, c);
       tl.appendChild(el); tileEls.set(tt.id, el);
       el.style.animationDelay = ((r * 7 + c * 3) % 40) / 10 + "s";
+      if (tt.born) { el.classList.add("new"); tt.born = false; }
       void el.offsetWidth;
       tt.spawn = false;
     }
@@ -228,6 +230,7 @@ async function settle() {
   for (let k = 0; k < 60; k++) {
     let moved = false;
     while (G.gravityStep()) { moved = true; render(); await sleep(animMs(80)); }
+    if (G.fillStuck()) { render(); await sleep(animMs(200)); continue; }
     if (G.collectRelics()) { playFx(); render(); await sleep(animMs(220)); continue; }
     break;
   }
@@ -253,8 +256,17 @@ async function endTurn() {
   armHint();
 }
 let lastSay = 0;
+let moodT = null;
+function mood(m, ms) {
+  const p = $("#gPortrait"); if (!p || GL.boss) return;
+  const set = x => { if (p.dataset.m === x) return; p.dataset.m = x; p.innerHTML = A.portrait("prince", x); p.classList.remove("bump"); void p.offsetWidth; p.classList.add("bump"); };
+  set(m); clearTimeout(moodT);
+  if (ms) moodT = setTimeout(() => set(G && !GL.endless && G.moves <= 5 ? "worried" : "happy"), ms);
+}
 function reactions() {
+  if (G && !GL.endless && G.moves <= 5) mood("worried");
   const c = G.stats.maxCascade;
+  if (G.cascade >= 3) mood("cheer", 1800);
   if (G.cascade >= 4 && Date.now() - lastSay > 4000) { say(["Wonderful!", "Amazing chain!", "Purrfect!", "Spectacular!"][Math.floor(Math.random() * 4)]); }
   else if (!GL.endless && G.moves === 3 && Date.now() - lastSay > 4000) say("Only 3 moves left — aim for the objectives!");
 }
@@ -282,7 +294,7 @@ function playFx() {
       case "orb": { SND.play("orb"); for (const [r, c] of f.cells.slice(0, 30)) { const d = document.createElement("div"); d.className = "bolt"; const x0 = cx(f.c), y0 = cy(f.r), x1 = cx(c), y1 = cy(r); Object.assign(d.style, { left: x0 + "px", top: y0 + "px", width: Math.hypot(x1 - x0, y1 - y0) + "px", transform: `rotate(${Math.atan2(y1 - y0, x1 - x0)}rad)` }); fx.appendChild(d); setTimeout(() => d.remove(), 500); } break; }
       case "spark": { SND.play("spark"); const d = document.createElement("div"); d.className = "fly"; d.textContent = "🧚"; d.style.transform = `translate(${cx(f.c) - 14}px,${cy(f.r) - 18}px)`; fx.appendChild(d); requestAnimationFrame(() => requestAnimationFrame(() => (d.style.transform = `translate(${cx(f.tc) - 14}px,${cy(f.tr) - 18}px)`))); setTimeout(() => d.remove(), 600); break; }
       case "star": case "nova": { SND.play("orb"); SND.play("boom"); vibe([30, 40, 60]); const d = document.createElement("div"); d.className = "flash"; fx.appendChild(d); setTimeout(() => d.remove(), 700); shake(3); break; }
-      case "combo": { banner({ cross: "Cross Blast!", cross3: "Mega Cross!", bigcore: "Dragon Fury!", nova: "Celestial Nova!", convert: "Orb Fusion!", spark: "Spark Strike!", triplespark: "Fairy Swarm!" }[f.name] || "Combo!"); vibe(50); break; }
+      case "combo": { mood("cheer", 2000); banner({ cross: "Cross Blast!", cross3: "Mega Cross!", bigcore: "Dragon Fury!", nova: "Celestial Nova!", convert: "Orb Fusion!", spark: "Spark Strike!", triplespark: "Fairy Swarm!" }[f.name] || "Combo!"); vibe(50); break; }
       case "crack": SND.play("crack"); break;
       case "break": SND.play("break"); if (parts) particles(cx(f.c), cy(f.r), "#c8ccd8", 6); break;
       case "coins": SND.play("coin"); break;
@@ -350,7 +362,7 @@ function tutorial(T) {
   const left = b.left - sr.left + c0 * TS - 4, top = b.top - sr.top + r0 * TS - 4;
   tutEl.innerHTML = `<div class="hole" style="left:${left}px;top:${top}px;width:${(c1 - c0 + 1) * TS + 8}px;height:${(r1 - r0 + 1) * TS + 8}px"></div>
     <div class="hand" style="left:${left + TS / 2}px;top:${top + TS / 2}px;--hx:${(forced.b[1] - forced.a[1]) * TS}px;--hy:${(forced.b[0] - forced.a[0]) * TS}px">👆</div>
-    <div class="msg">${A.CAT}<div class="say">${esc(msg)}</div></div><button class="btn sm ghost skip">Skip tutorial</button>`;
+    <div class="msg">${A.portrait("lumi", "happy", "catp")}<div class="say">${esc(msg)}</div></div><button class="btn sm ghost skip">Skip tutorial</button>`;
   $("#scr-game").appendChild(tutEl);
   SND.play("voice", 1);
   $(".skip", tutEl).onclick = () => { S.flags.tut = { 1: 1, 2: 1, 3: 1, booster: 1 }; save(); endTutorialStep(true); };
@@ -364,7 +376,7 @@ function endTutorialStep(skipped) {
 }
 function boosterTutorial() {
   S.flags.tut.booster = 1; if (!(S.boosters.hammer > 0)) S.boosters.hammer = 1; save(); hud();
-  modal({ title: "🔨 Boosters", html: `<div class="dlg"><div class="who">${A.CAT}</div><div class="say"><b>Lumi</b>Stuck? Boosters at the bottom help! Tap the Royal Hammer, then tap any tile to smash it. Boosters never cost a move.</div></div>`, buttons: [{ label: "Got it!", cls: "gold" }] });
+  modal({ title: "Boosters", html: `<div class="dlg"><div class="who">${A.portrait("lumi", "happy")}</div><div class="say"><b>Lumi</b>Stuck? Boosters at the bottom help! Tap the Royal Hammer, then tap any tile to smash it. Boosters never cost a move.</div></div>`, buttons: [{ label: "Got it!", cls: "gold" }] });
 }
 async function obstacleIntro() {
   const types = [...new Set((GL.obstacles || []).map(o => o.t))];
@@ -373,7 +385,7 @@ async function obstacleIntro() {
     if (S.flags.seenOb[ty]) continue;
     S.flags.seenOb[ty] = 1; save();
     const info = { cage: "Crystal Cages lock a gem in place. Match the caged gem to shatter the cage.", ice: "Frozen floors hide under gems. Clear the gems on top to melt them — some take two hits.", stone: "Stone Barriers block cells. Make matches right next to them. Some have up to 3 layers!", relic: "Ancient Relics can't be matched. Clear the gems under them so they fall to the bottom row.", chest: "Ancient Chests take two hits from matches next to them — and drop coins!", resin: "Magic Resin holds a gem. Match that gem or match right next to it.", lock: "Magical Locks are tougher cages: they need two hits.", vine: "Enchanted Vines grow every turn you don't damage one. Trim them fast!", portal: "Sealed Portals sleep under gems. Clear the gem standing on one to wake it.", shadow: "Shadow Crystals ignore normal matches. Only power-ups (or the Royal Hammer) can break them." }[ty];
-    const art = ty === "relic" ? A.relic() : ty === "ice" ? '<div style="font-size:70px">🧊</div>' : ty === "portal" ? '<div style="font-size:70px">🌀</div>' : A.obstacle(ty, ty === "lock" || ty === "chest" ? 2 : 1, 2);
+    const art = ty === "relic" ? A.relic() : A.obstacle(ty, ty === "lock" || ty === "chest" ? 2 : 1, 2);
     await new Promise(res => modal({ title: "New obstacle!", html: `<div class="inner" style="text-align:center"><div style="width:90px;height:90px;margin:0 auto">${art}</div><h3 style="margin:6px 0">${ty === "relic" ? "Ancient Relic" : E.OBST[ty].label}</h3><p>${info}</p></div>`, buttons: [{ label: "Got it!", cls: "gold" }], onClose: res }));
   }
 }
@@ -411,7 +423,7 @@ function finishRun(won) {
 }
 async function victory() {
   busy = true; disarmHint();
-  SND.play("win"); banner(t("Victory"));
+  SND.play("win"); banner(t("Victory")); mood("cheer");
   await sleep(animMs(1100));
   // Royal Finale: unused moves become beams
   const left = Math.max(0, G.moves);
@@ -480,7 +492,7 @@ async function victory() {
 async function outOfMoves() {
   busy = true; disarmHint();
   if (GL.endless) { return modeOver(); }
-  SND.play("lose");
+  SND.play("lose"); mood("worried");
   const remaining = G.objectives.map(o => objIcon(o, GL, G.objRemaining(o))).join("");
   const have = S.boosters.moves5 || 0;
   const choice = await new Promise(res => {
@@ -495,7 +507,7 @@ async function outOfMoves() {
   loseLife(); S.stats.losses++; S.stats.streak = 0;
   finishRun(false); try { localStorage.removeItem("gk_inlevel"); } catch (e) {}
   save(true);
-  modal({ title: "💔 Level failed", noClose: true, html: `<div class="dlg"><div class="who">${A.CAT}</div><div class="say"><b>Lumi</b>Don't give up! Try aiming power-ups at the objectives.</div></div>
+  modal({ title: "💔 Level failed", noClose: true, html: `<div class="dlg"><div class="who">${A.portrait("prince", "worried")}</div><div class="say"><b>Prince Aurelio</b>Don't give up! Try aiming power-ups at the objectives.</div></div>
     <div class="inner" style="text-align:center;margin-top:8px"><p>Remaining objectives:</p><div class="row wrap" style="justify-content:center">${remaining}</div><p class="muted">−1 life · ${unlimited() ? "Unlimited lives active" : `${S.lives} lives left${S.lives < MAX_LIVES ? " · next in " + dur(nextLifeIn()) : ""}`}</p></div>`,
     buttons: [{ label: "🗺️ " + t("Map"), cls: "blue", onClick: api => { api.close(); leaveGame(); } }, { label: "↻ " + t("Retry"), cls: "", onClick: api => { api.close(); const L = GL; leaveGame(); if (L.mode) beginLevel(D.makeMode(L.mode), []); else setTimeout(() => levelStart(L.id), 100); } }] });
 }
@@ -538,7 +550,7 @@ victory = async function () {
 
 /* ---------------- boot ---------------- */
 async function boot() {
-  document.body.insertAdjacentHTML("afterbegin", A.defs());
+  document.body.insertAdjacentHTML("afterbegin", A.defs()); A.preload();
   const st = await load();
   buildChrome();
   ensureMissions();

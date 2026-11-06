@@ -10,10 +10,10 @@ function play(level,seed){
     else r=g.trySwap(m.a,m.b);
     if(!r.ok){ g.tapSpecial(...m.a)||g.shuffle(); }
     let loops=0;
-    do{ while(g.runWave()){} while(g.gravityStep()){} g.collectRelics(); while(g.gravityStep()){} if(loops++>200)throw new Error('loop'); }
+    do{ while(g.runWave()){} for(let k=0;k<50;k++){ while(g.gravityStep()){} if(g.fillStuck()) continue; if(g.collectRelics()) continue; break; } if(loops++>200)throw new Error('loop'); }
     while(g.resolveMatches()||g.queue.length);
     // sanity: no empty non-block cells
-    g.each((x,r,c)=>{ if(!x.hole&&!x.block&&!x.tile&&!g.stuckAbove(r,c)) throw new Error('hole at '+r+','+c+'\n'+g.dump()); });
+    g.each((x,r,c)=>{ if(!x.hole&&!x.block&&!x.tile) throw new Error('hole at '+r+','+c+' stuck='+g.stuckAbove(r,c)+' up='+JSON.stringify([g.cell(r-1,c-1),g.cell(r-1,c),g.cell(r-1,c+1)])+'\n'+g.dump()); });
     g.endTurn();
   }
   return g;

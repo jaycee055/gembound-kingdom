@@ -610,6 +610,16 @@ class Game {
     }
     return moved;
   }
+  /* cells that nothing can ever fall into (sealed under cages/blocks): refill in place */
+  fillStuck() {
+    let any = false;
+    this.each((x, r, c) => {
+      if (x.hole || x.block || x.tile || !this.stuckAbove(r, c)) return;
+      for (const dc of [-1, 1]) { const d = this.cell(r - 1, c + dc); if (d && !d.hole && d.tile && !d.over && !d.block) return; }
+      x.tile = this.spawnTile(); x.tile.born = true; any = true;
+    });
+    return any;
+  }
   spawnTile() {
     const relicGoal = this.objectives.find(o => o.t === "relic");
     if (relicGoal) {

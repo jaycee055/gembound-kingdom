@@ -420,6 +420,118 @@ select,.inp{padding:8px 10px;border-radius:10px;border:2px solid #c8b8e8;backgro
 #topbar .grow-sp{flex:1}
 .board .tiles{overflow:hidden;border-radius:10px}
 
+/* ================= v2: painted art + Royal-style layout ================= */
+@media (display-mode: standalone){ #app{bottom:auto;height:100vh} }
+.gpic{width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;-webkit-user-drag:none}
+.t{position:absolute}
+.t .glyph{position:absolute;right:4%;bottom:2%;font-size:calc(var(--ts)*.3);font-weight:900;color:#fff;-webkit-text-stroke:1.5px #000;paint-order:stroke;display:none}
+.glyphs .t .glyph{display:block}
+.t .spc{position:absolute;left:8%;bottom:8%;width:22%;height:22%;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 2px #000}
+.obhp{position:absolute;right:2px;top:2px;min-width:20px;height:20px;padding:0 4px;border-radius:10px;background:#3a1a6a;color:#fff;border:2px solid #fff;font-size:12px;font-weight:800;display:grid;place-items:center}
+.tint3{filter:hue-rotate(185deg) saturate(1.6) brightness(1.08)}
+.t.ov .ovl{opacity:.95}
+.t.ov img[src*="ob_lock"]{transform:scale(.82) translateY(8%)}
+.t.ov img[src*="ob_resin"]{opacity:.72}
+.sp-orb,.sp-star{animation:spin 6s linear infinite}
+.sp-spark{animation:selb 1.2s ease-in-out infinite}
+.sp-core{animation:pls 1.2s ease-in-out infinite}
+.relic{filter:drop-shadow(0 0 6px #ffe08a)}
+.ico.gpic{width:30px;height:30px}
+.ri{width:34px!important;height:34px!important;display:inline-block}
+.bigic{width:52px;height:52px;flex:0 0 auto;display:grid;place-items:center;font-size:36px}
+.bigic .gpic{width:52px;height:52px}
+.chestbig .gpic{width:170px;height:170px;margin:0 auto}
+.tile-card .em .gpic{width:48px;height:48px;margin:0 auto}
+.list .li .e .gpic{width:34px;height:34px}
+.cal .d .e .gpic,.cal .d .e .ico{width:38px;height:38px;margin:0 auto}
+.mile .gpic,.mile .ico{width:34px;height:34px;margin:0 auto}
+.rw .gpic{width:40px;height:40px}
+.dlg .who .gpic{width:110px;height:110px}
+.bubble .catp{width:74px;height:74px}
+.tut .msg .catp{width:80px;height:80px;flex:0 0 auto}
+
+/* home */
+.home-wrap{padding-top:calc(env(safe-area-inset-top) + 62px);padding-bottom:calc(var(--tabh) + env(safe-area-inset-bottom) + 6px)}
+.logo{margin-top:0}
+.logo h1{font-size:clamp(30px,9vw,46px)}
+.home-mid{flex:1;min-height:0;position:relative}
+.side{justify-content:space-evenly;padding:0 4px;gap:2px;z-index:3}
+.rbtn{width:70px}
+.rbtn .ic{width:56px;height:56px;font-size:28px;overflow:hidden}
+.rbtn .ic .gpic{width:44px;height:44px}
+.rbtn .lb{font-size:11px;margin-top:-8px;max-width:76px;overflow:hidden;text-overflow:ellipsis}
+.rbtn .tmr{margin-top:2px;padding:0 6px;border-radius:8px;background:#fff3c8;color:#3a2a5a;font-size:10px;font-weight:800;line-height:15px}
+.stage{position:static}
+.hero{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:min(70%,340px);aspect-ratio:1/1;pointer-events:none}
+.hero .hp{position:absolute;left:0;bottom:0;width:86%;height:86%;filter:drop-shadow(0 10px 14px rgba(0,0,0,.35))}
+.hero .hc{position:absolute;right:-12%;bottom:0;width:50%;height:50%;filter:drop-shadow(0 8px 10px rgba(0,0,0,.3))}
+.hero .pet{position:absolute;left:-6%;bottom:4%;font-size:36px}
+.anim .hero .hp{animation:breathe 4s ease-in-out infinite;transform-origin:50% 100%}
+.anim .hero .hc{animation:bob 3s ease-in-out infinite}
+.homeplay{display:flex;flex-direction:column;gap:8px;padding:6px 14px 0;z-index:4;position:relative}
+.kstrip{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:16px;background:linear-gradient(180deg,rgba(110,70,180,.95),rgba(70,40,130,.95));border:3px solid #d9a13a;box-shadow:var(--sh);text-align:left}
+.kstrip .ki{font-size:26px}
+.kstrip .kt{flex:1;min-width:0}
+.kstrip .kt b{font-family:var(--title);font-size:15px;color:#fff3c8}
+.kstrip .bar{height:14px;margin-top:2px}
+.kstrip .circ{width:32px;height:32px;font-size:18px}
+.playbtn{padding:10px 14px;border-radius:22px;background:linear-gradient(180deg,#9cff6a,#3ec22a 45%,#1f8f1f);border:4px solid #fff3b0;box-shadow:0 0 0 3px #a8701a,0 7px 0 #145a14,0 12px 20px rgba(0,0,0,.45)}
+.playbtn::before{display:none}
+.playbtn b{font-family:var(--font);font-weight:800;font-size:32px;text-shadow:0 3px 0 #145a14,0 0 1px #145a14}
+.playbtn span{font-size:16px;font-weight:800}
+
+/* game header */
+.ghead{display:grid;grid-template-columns:1fr auto 1fr;gap:6px;align-items:stretch}
+.gpanel{position:relative;border-radius:14px;background:linear-gradient(180deg,#fff6dc,#ecd6a8);border:3px solid #b8801f;box-shadow:inset 0 0 0 2px #fff,0 4px 0 #6a3f0f,0 8px 14px rgba(0,0,0,.35);padding:20px 6px 6px;display:flex;align-items:center;justify-content:center;min-height:86px;color:#3a2a5a}
+.gptitle{position:absolute;left:50%;top:-10px;transform:translateX(-50%);padding:2px 14px;border-radius:10px;background:linear-gradient(180deg,#8a5ad8,#4a2a9a);border:2px solid #f4c75e;color:#fff3c8;font-weight:800;font-size:13px;white-space:nowrap;text-shadow:0 1px 0 #000}
+.gpanel .gobj{display:flex;flex-wrap:wrap;gap:4px;justify-content:center}
+.gpanel .obj{width:44px;height:44px}
+.gpanel .obj .gsvg{width:40px;height:40px}
+.gmoves b{font-size:42px;line-height:1;font-weight:800;color:#3a2a5a;text-shadow:0 2px 0 #fff}
+.gmoves.low b{color:#d8203a}
+.gportrait{width:96px;height:96px;margin-top:-4px;border-radius:50%;background:radial-gradient(circle at 50% 35%,#8ac8ff,#2859A8);border:4px solid #f4c75e;box-shadow:0 0 0 3px #6a3f0f,0 8px 14px rgba(0,0,0,.4);overflow:hidden;display:grid;place-items:center}
+.gportrait .gpic{width:112%;height:112%;margin-top:10%}
+.gportrait.bump{animation:bump .35s}
+.bossface{font-size:58px;animation:bob 2s ease-in-out infinite}
+.gscore{margin-top:4px}
+.bossbar{margin-top:4px}
+/* board */
+.cells{filter:drop-shadow(2px 0 0 #3a1a6a) drop-shadow(-2px 0 0 #3a1a6a) drop-shadow(0 2px 0 #3a1a6a) drop-shadow(0 -2px 0 #3a1a6a) drop-shadow(0 8px 10px rgba(0,0,0,.35))}
+.cell{background:#c3ccf2;box-shadow:inset 0 0 0 1px rgba(80,60,160,.18)}
+.cell.alt{background:#b2bcea}
+.cell.fl .gpic{position:absolute;inset:3px;width:calc(100% - 6px);height:calc(100% - 6px);opacity:.85}
+.cell.ice2 .gpic{filter:saturate(1.6) brightness(.85)}
+.cell.fl img[src*="portal"]{opacity:.9;animation:spin 8s linear infinite}
+.cell::after{display:none!important}
+.tiles .t{padding:4px}
+.hc .cell{background:#fff}.hc .cell.alt{background:#e8e8e8}
+/* booster bar */
+.gboost{gap:8px;align-items:center}
+.gboost button{width:58px;height:58px;border-radius:50%;padding:7px;background:radial-gradient(circle at 50% 35%,#7a5ad0,#3a2670);border:4px solid #f4c75e;box-shadow:0 0 0 2px #6a3f0f,0 5px 0 #2a1a4a}
+.gboost button .gpic{width:100%;height:100%}
+.gboost button .q{left:-6px;right:auto;bottom:-6px;background:#e8203a;color:#fff;border-color:#fff}
+.gboost button .q.buy{background:#2fb43f}
+.gboost button.on{background:radial-gradient(circle,#ffef9a,#d9a13a);transform:translateY(-6px) scale(1.06)}
+.gboost .gear2{font-size:26px;padding:0}
+/* modal ribbon */
+.modal{padding-top:0}
+.modal h2{margin:0 -16px 12px;padding:12px 48px 10px;border-radius:20px 20px 0 0;background:linear-gradient(180deg,#9a6ae8,#5a3aa8);border-bottom:3px solid #d9a13a}
+.modal .mx{top:8px}
+.preb .em .gpic{width:44px;height:44px}
+/* events track */
+.track{position:relative;height:96px;margin:10px 8px 4px}
+.track .tbar{position:absolute;left:0;right:0;top:34px;height:18px;border-radius:10px;background:#5a3a2a;border:3px solid #3a1a0a;overflow:hidden}
+.track .tbar i{position:absolute;inset:0;width:0;background:linear-gradient(180deg,#9cff6a,#2f9f3f)}
+.track .tn{position:absolute;top:0;transform:translateX(-50%);width:60px;text-align:center;font-size:11px;font-weight:800}
+.track .tn .gpic,.track .tn .ico{width:50px;height:50px;margin:0 auto;filter:drop-shadow(0 3px 2px rgba(0,0,0,.4))}
+.track .tn.got .gpic{filter:grayscale(.6) opacity(.6)}
+.track .tn .ok{display:inline-block;margin-top:2px}
+.evhero{position:relative;height:120px;border-radius:14px;overflow:hidden;margin:-4px -4px 8px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 10px}
+.evhero .gpic{width:110px;height:110px}
+.evhero h3{position:absolute;left:0;right:0;top:6px;text-align:center;margin:0;font-family:var(--title);font-size:24px;color:#fff3c8;-webkit-text-stroke:1px #3a1a6a;text-shadow:0 3px 0 #3a1a6a}
+@media (min-width:960px){ .hero{width:min(46%,420px)} .gportrait{width:120px;height:120px} .gpanel{min-height:104px} .gpanel .obj{width:54px;height:54px} .gpanel .obj .gsvg{width:50px;height:50px} .gmoves b{font-size:52px} }
+@media (max-height:740px){ .rbtn .ic{width:48px;height:48px} .rbtn .ic .gpic{width:36px;height:36px} .hero{width:min(60%,300px)} .gportrait{width:80px;height:80px} .gpanel{min-height:74px} }
+
 </style>
 </head>
 <body>
@@ -1051,6 +1163,16 @@ class Game {
     }
     return moved;
   }
+  /* cells that nothing can ever fall into (sealed under cages/blocks): refill in place */
+  fillStuck() {
+    let any = false;
+    this.each((x, r, c) => {
+      if (x.hole || x.block || x.tile || !this.stuckAbove(r, c)) return;
+      for (const dc of [-1, 1]) { const d = this.cell(r - 1, c + dc); if (d && !d.hole && d.tile && !d.over && !d.block) return; }
+      x.tile = this.spawnTile(); x.tile.born = true; any = true;
+    });
+    return any;
+  }
   spawnTile() {
     const relicGoal = this.objectives.find(o => o.t === "relic");
     if (relicGoal) {
@@ -1213,7 +1335,7 @@ const DIFF = [
   { name: "Normal", color: "#39A879", f: 1.3 },
   { name: "Challenging", color: "#2859A8", f: 1.15 },
   { name: "Hard", color: "#EF826F", f: 1.15 },
-  { name: "Super Hard", color: "#8866C8", f: 1.08 },
+  { name: "Super Hard", color: "#8866C8", f: 1.16 },
   { name: "Legendary", color: "#F4C75E", f: 1.0 },
 ];
 const BOSSES = [
@@ -1319,7 +1441,7 @@ function makeLevel(n) {
   const treasure = i === 12;
   if (treasure) pick = ["chest"].concat(pick.filter(x => x !== "chest").slice(0, 1));
   for (const t of pick) {
-    if (t === "relic") { relicN = 2 + Math.min(2, Math.floor(region / 3) + (d >= 2 ? 1 : 0)); work += relicN * 4; continue; }
+    if (t === "relic") { relicN = 2 + Math.min(2, Math.floor(region / 3) + (d >= 2 ? 1 : 0)); work += relicN * 6; continue; }
     const L = layerOf(t);
     let count = Math.round(({ cage: 6, ice: 10, stone: 6, chest: 4, resin: 6, lock: 5, vine: 3, portal: 6, shadow: 4 }[t] || 5) * scale);
     if (treasure && t === "chest") count = 10;
@@ -1794,7 +1916,40 @@ function crystalSvg() { return `<svg viewBox="0 0 40 40" class="ico"><path d="M8
 function heartSvg() { return `<svg viewBox="0 0 40 40" class="ico"><path d="M20 35 C8 26 3 19 4 12 C5 6 11 3 15 4 C17 5 19 6 20 9 C21 6 23 5 25 4 C29 3 35 6 36 12 C37 19 32 26 20 35Z" fill="#ff3a5a" stroke="#8a0a2a" stroke-width="2.5"/><ellipse cx="13" cy="12" rx="4" ry="2.5" fill="#fff" opacity=".7"/></svg>`; }
 function starSvg(on) { return `<svg viewBox="0 0 40 40" class="ico star ${on ? "on" : "off"}"><path d="M20 3 l5 11 12 1 -9 8 3 12 -11 -6 -11 6 3 -12 -9 -8 12 -1Z" fill="${on ? "url(#gGold)" : "#5a5f8a"}" stroke="${on ? "#8a5a10" : "#3a3f6a"}" stroke-width="2.5" stroke-linejoin="round"/></svg>`; }
 
-root.GKArt = { defs, gem, obstacle, relic, PRINCE, CAT, castleScene, GEM_COL, coinSvg, crystalSvg, heartSvg, starSvg, bossArt };
+
+/* ---------- painted sprites (img/*.webp) ---------- */
+const pic = (n, cls = "") => `<img class="gsvg gpic ${cls}" src="img/${n}.webp" alt="" draggable="false">`;
+const SPN = { bh: "sp_bh", bv: "sp_bv", core: "sp_core", orb: "sp_orb", spark: "sp_spark", star: "sp_star" };
+function gemP(color, sp) {
+  if (color === -2) return pic("relic", "relic");
+  if (sp) return pic(SPN[sp] || "sp_star", "sp-" + sp) + (color >= 0 && sp !== "orb" && sp !== "star" ? `<span class="spc" style="background:${GEM_COL[color][1]}"></span>` : "");
+  return pic("gem" + color) + `<span class="glyph">${GLYPH[color]}</span>`;
+}
+function obstacleP(type, hp, max) {
+  const badge = n => `<span class="obhp">${n}</span>`;
+  switch (type) {
+    case "stone": return pic(hp === 1 && max > 1 ? "ob_stone2" : "ob_stone", hp >= 3 ? "tint3" : "") + (hp > 1 ? badge(hp) : "");
+    case "chest": return pic(hp < max ? "ob_chest2" : "ob_chest");
+    case "lock": return pic("ob_lock", "ovl") + (hp > 1 ? badge(hp) : "");
+    case "cage": return pic("ob_cage", "ovl");
+    case "resin": return pic("ob_resin", "ovl");
+    case "vine": return pic("ob_vine");
+    case "shadow": return pic("ob_shadow", "pulse");
+    case "ice": return pic("ob_ice");
+    case "portal": return pic("ob_portal");
+  }
+  return "";
+}
+const CHEST_PIC = { wooden: "ch_wooden", silver: "ch_silver", golden: "ch_golden", crystal: "ch_crystal", legendary: "ch_legendary", open: "ch_open" };
+const BOOST_PIC = { hammer: "bo_hammer", saber: "bo_saber", bomb: "bo_bomb", prism: "bo_prism", shuffle: "bo_shuffle", moves5: "bo_moves5", pre_beam: "sp_bh", pre_core: "sp_core", pre_orb: "sp_orb" };
+const chestPic = (t, cls = "") => pic(CHEST_PIC[t] || "ch_golden", cls);
+const boostPic = (id, cls = "") => pic(BOOST_PIC[id] || "bo_hammer", cls);
+const portrait = (who, mood, cls = "") => pic(who === "lumi" ? (mood === "surprised" ? "cat_surprised" : "cat_happy") : ({ worried: "pr_worried", cheer: "pr_cheer" }[mood] || "pr_happy"), cls);
+const heartPic = () => pic("heart", "ico");
+const ALL_PICS = ["gem0","gem1","gem2","gem3","gem4","gem5","sp_bh","sp_bv","sp_core","sp_orb","sp_spark","sp_star","ob_stone","ob_stone2","ob_cage","ob_lock","ob_resin","ob_ice","ob_vine","ob_chest","ob_chest2","ob_shadow","ob_portal","relic","pr_happy","pr_worried","pr_cheer","cat_happy","cat_surprised","heart"];
+function preload() { ALL_PICS.forEach(n => { const i = new Image(); i.src = `img/${n}.webp`; }); }
+
+root.GKArt = { defs, gem: gemP, obstacle: obstacleP, relic: () => pic("relic", "relic"), svgGem: gem, pic, chestPic, boostPic, portrait, heartPic, preload, PRINCE, CAT, castleScene, GEM_COL, coinSvg, crystalSvg, heartSvg, starSvg, bossArt };
 })(typeof window !== "undefined" ? window : globalThis);
 
 /* ===== Gembound Kingdom — original synthesized audio (no recorded assets) ===== */
@@ -2019,12 +2174,12 @@ function grant(r, why) {
   if (r.coins) { addCoins(r.coins); shown.push({ ico: A.coinSvg(), n: "+" + fmt(r.coins) }); }
   if (r.crystals) { S.crystals += r.crystals; shown.push({ ico: A.crystalSvg(), n: "+" + r.crystals }); }
   const bl = r.booster ? [].concat(r.booster) : [];
-  for (const b of bl) { S.boosters[b] = (S.boosters[b] || 0) + 1; logBooster(b, +1, why); shown.push({ e: D.BOOSTERS[b].icon, n: "+1" }); }
-  if (r.boosters) for (const b in r.boosters) { S.boosters[b] = (S.boosters[b] || 0) + r.boosters[b]; logBooster(b, r.boosters[b], why); shown.push({ e: D.BOOSTERS[b].icon, n: "+" + r.boosters[b] }); }
+  for (const b of bl) { S.boosters[b] = (S.boosters[b] || 0) + 1; logBooster(b, +1, why); shown.push({ ico: A.boostPic(b, "ico"), n: "+1" }); }
+  if (r.boosters) for (const b in r.boosters) { S.boosters[b] = (S.boosters[b] || 0) + r.boosters[b]; logBooster(b, r.boosters[b], why); shown.push({ ico: A.boostPic(b, "ico"), n: "+" + r.boosters[b] }); }
   const lv = r.life || r.lives;
-  if (lv) { S.lives = Math.min(MAX_LIVES + 5, S.lives + lv); shown.push({ ico: A.heartSvg(), n: "+" + lv }); }
+  if (lv) { S.lives = Math.min(MAX_LIVES + 5, S.lives + lv); shown.push({ ico: A.heartPic(), n: "+" + lv }); }
   if (r.unlimited) { S.unlimitedUntil = Math.max(Date.now(), S.unlimitedUntil) + r.unlimited * 60000; shown.push({ e: "♾️", n: r.unlimited + "m" }); }
-  if (r.chest) { shown.push({ e: D.CHESTS[r.chest].icon, n: D.CHESTS[r.chest].name }); queueChest(r.chest); }
+  if (r.chest) { shown.push({ ico: A.chestPic(r.chest, "ico"), n: D.CHESTS[r.chest].name }); queueChest(r.chest); }
   if (r.item) { if (unlockItem(r.item, why)) shown.push({ e: itemById(r.item).icon, n: "New!" }); }
   save(); refreshTop();
   return shown;
@@ -2038,7 +2193,7 @@ function rewardText(r) {
   if (r.item) p.push(itemById(r.item).name);
   return p.join(" + ");
 }
-function rewardIcon(r) { if (r.chest) return D.CHESTS[r.chest].icon; if (r.crystals) return "💎"; if (r.booster) return D.BOOSTERS[[].concat(r.booster)[0]].icon; if (r.item) return itemById(r.item).icon; return "🪙"; }
+function rewardIcon(r) { if (r.chest) return A.chestPic(r.chest, "ri"); if (r.crystals) return A.crystalSvg().replace('class="ico"', 'class="ico ri"'); if (r.booster) return A.boostPic([].concat(r.booster)[0], "ri"); if (r.item) return itemById(r.item).icon; return A.coinSvg().replace('class="ico"', 'class="ico ri"'); }
 function logBooster(id, n, why) { S.boosterLog.unshift({ id, n, why: why || "", at: Date.now() }); S.boosterLog.length = Math.min(S.boosterLog.length, 60); }
 async function spend(cur, amount, what) {
   const have = cur === "coins" ? S.coins : S.crystals;
@@ -2130,11 +2285,11 @@ async function openChests() {
     S.stats.chests++;
     const r = rollChest(type);
     await new Promise(res => {
-      const m = modal({ title: C.name, html: `<div class="chestbig">${C.icon}</div><p style="text-align:center" class="muted">Opening…</p>`, buttons: [], noClose: true });
+      const m = modal({ title: C.name, html: `<div class="chestbig">${A.chestPic(type)}</div><p style="text-align:center" class="muted">Opening…</p>`, buttons: [], noClose: true });
       setTimeout(() => {
         SND.play("reward");
         const shown = grant(r, C.name);
-        m.set(`<div class="chestbig open">✨${C.icon}✨</div>${rewardHTML(shown)}<p class="muted" style="text-align:center"><a href="#" data-odds="${type}" style="color:#fff3c8">See drop rates</a></p>`, [{ label: "Collect", cls: "gold", onClick: () => { m.close(); res(); } }]);
+        m.set(`<div class="chestbig open">${A.chestPic("open")}</div>${rewardHTML(shown)}<p class="muted" style="text-align:center"><a href="#" data-odds="${type}" style="color:#fff3c8">See drop rates</a></p>`, [{ label: "Collect", cls: "gold", onClick: () => { m.close(); res(); } }]);
         $("[data-odds]", m.el).onclick = e => { e.preventDefault(); showOdds(type); };
       }, S.settings.quick || S.settings.reducedMotion ? 300 : 1500);
     });
@@ -2144,7 +2299,7 @@ async function openChests() {
 function showOdds(type) {
   const C = D.CHESTS[type]; const total = C.table.reduce((a, r) => a + r[2], 0);
   const names = { coins: "Coins", booster: "Booster(s)", life: "Lives", crystals: "Crystals", card: "Collection card", unlimited: "Unlimited lives (min)" };
-  modal({ title: C.icon + " " + C.name, html: `<div class="inner"><p><b>${C.rolls} rewards</b> per chest. Each reward is rolled independently:</p>${C.table.map(([k, v, w]) => `<div class="row"><span class="grow">${names[k]} ×${v}</span><b>${Math.round(w / total * 100)}%</b></div>`).join("")}<p class="muted">Collection cards only drop items you don't own yet; if you own them all you get 100 coins instead. Chests are never sold for real money.</p></div>` });
+  modal({ title: C.name, html: `<div class="inner"><p><b>${C.rolls} rewards</b> per chest. Each reward is rolled independently:</p>${C.table.map(([k, v, w]) => `<div class="row"><span class="grow">${names[k]} ×${v}</span><b>${Math.round(w / total * 100)}%</b></div>`).join("")}<p class="muted">Collection cards only drop items you don't own yet; if you own them all you get 100 coins instead. Chests are never sold for real money.</p></div>` });
 }
 
 /* ---------------- inbox ---------------- */
@@ -2344,7 +2499,7 @@ function refreshTop() {
     <span class="nm"><b>${esc(S.name)}</b><span class="xpbar"><i style="width:${Math.min(100, S.xp / need * 100)}%"></i><span>${fmt(S.xp)} / ${fmt(need)}</span></span></span></button>
     <button class="pill" data-nav="shop" aria-label="Coins ${S.coins}">${A.coinSvg()}<span class="val">${fmt(S.coins)}</span><span class="plus">+</span></button>
     <button class="pill" data-nav="shop" aria-label="Crystals ${S.crystals}">${A.crystalSvg()}<span class="val">${fmt(S.crystals)}</span><span class="plus">+</span></button>
-    <button class="pill lives" id="livesPill" aria-label="Lives">${A.heartSvg()}<span class="val">${unlimited() ? "∞" : S.lives}</span><span class="sub">${unlimited() ? dur(S.unlimitedUntil - Date.now()) : S.lives >= MAX_LIVES ? t("Full") : dur(nextLifeIn())}</span></button>
+    <button class="pill lives" id="livesPill" aria-label="Lives">${A.heartPic()}<span class="val">${unlimited() ? "∞" : S.lives}</span><span class="sub">${unlimited() ? dur(S.unlimitedUntil - Date.now()) : S.lives >= MAX_LIVES ? t("Full") : dur(nextLifeIn())}</span></button>
     <button class="gear" data-nav="settings" aria-label="${t("Settings")}">⚙️</button>`;
   $("#livesPill").onclick = () => { SND.play("click"); showLives(); };
   refreshBadges();
@@ -2377,35 +2532,42 @@ function showLives() {
 let partsBuilt = false;
 function renderHome() {
   ensureMissions();
-  const R = D.REGIONS[Math.min(D.REGIONS.length - 1, Math.floor((Math.min(S.level, D.MAX_LEVEL) - 1) / D.PER_REGION))];
+  const lvl = Math.min(S.level, D.MAX_LEVEL);
+  const R = D.REGIONS[Math.floor((lvl - 1) / D.PER_REGION)];
+  const ri = D.REGIONS.indexOf(R);
   const sky = D.BACKGROUND_SKY[S.bg] || D.BACKGROUND_SKY.bg_garden;
   const el = $("#scr-home");
-  const ri = D.REGIONS.indexOf(R);
   const kp = kingdomPct(ri);
   const done = S.level > D.MAX_LEVEL;
-  el.innerHTML = `${A.castleScene(sky)}<div class="particles">${Array.from({ length: 14 }, (_, i) => `<i style="left:${(i * 37) % 100}%;top:${50 + (i * 23) % 45}%;animation-delay:${(i * 0.53) % 7}s"></i>`).join("")}</div>
+  const L = D.makeLevel(lvl), dc = D.DIFF[L.difficulty];
+  const evs = D.activeEvents();
+  const ev = evs.find(e => !e.tournament), tour = evs.find(e => e.tournament);
+  const ds = dailyStatus();
+  const mDone = S.missions.daily.filter(m => !m.claimed).length;
+  el.innerHTML = `${A.castleScene(sky)}<div class="particles">${Array.from({ length: 14 }, (_, i) => `<i style="left:${(i * 37) % 100}%;top:${40 + (i * 23) % 50}%;animation-delay:${(i * 0.53) % 7}s"></i>`).join("")}</div>
   <div class="home-wrap">
-    <div class="logo"><span class="crown">👑</span><h1>Gembound<br>Kingdom</h1></div>
+    <div class="logo"><h1>Gembound<br>Kingdom</h1></div>
     <div class="home-mid">
       <div class="side">
-        ${rb("inbox", "✉️", "Inbox")}${rb("daily", "🎁", "Daily Rewards")}${rb("events", "🎪", "Events")}${rb("tournament", "🏆", "Tournament")}
+        ${rb("inbox", "✉️", "Inbox")}${rb("daily", A.pic("ch_golden"), "Daily", ds.can ? "Ready!" : dur(nextMidnight() - Date.now()))}${rb("events", A.pic("ch_legendary"), ev.name.split(" ").slice(-1)[0], dur(ev.end - Date.now()))}${rb("tournament", "🏆", "Tournament", dur(tour.end - Date.now()))}
       </div>
-      <div class="stage">${A.PRINCE}${A.CAT}${S.pet ? `<span class="pet">${itemById(S.pet).icon}</span>` : ""}
-        <div class="playbig"><button class="playbtn" data-nav="play"><b data-i18n="Play">${t("Play")}</b><span>${done ? "All levels complete!" : t("Level") + " " + fmt(S.level)}</span></button></div>
+      <div class="stage">
+        <div class="hero">${A.portrait("prince", S.stats.streak >= 3 ? "cheer" : "happy", "hp")}${A.portrait("lumi", "happy", "hc")}${S.pet ? `<span class="pet">${itemById(S.pet).icon}</span>` : ""}</div>
       </div>
       <div class="side">
-        ${rb("missions", "📜", "Missions")}${rb("collection", "📖", "Collection")}${rb("achievements", "🎖️", "Achievements")}${rb("friends", "👥", "Friends")}
+        ${rb("missions", "📜", "Missions", mDone ? mDone + " left" : "Done!")}${rb("collection", "📖", "Collection")}${rb("achievements", "🎖️", "Awards")}${rb("modes", A.pic("sp_star"), "Challenges")}
       </div>
     </div>
-    <div class="panel"><h3>📜 <span data-i18n="Daily Missions">${t("Daily Missions")}</span><span class="tm" id="mTimer">⏱ ${dur(nextMidnight() - Date.now())}</span></h3>
-      <div class="mcards">${S.missions.daily.map((m, i) => { const I = missionInfo(m, D.DAILY_POOL); return `<button class="mcard ${I.done ? "done" : ""}" data-nav="missions"><span class="t"><i>${I.def.icon}</i>${esc(I.def.text)}</span>${m.claimed ? bar(1, "✔ Claimed") : bar(I.prog / I.def.n, I.done ? "Claim!" : `${fmt(I.prog)}/${fmt(I.def.n)}`)}</button>`; }).join("")}</div></div>
-    <div class="panel kprog" data-nav="kingdom" role="button" tabindex="0"><span class="ki">🏰</span><span class="kt"><b data-i18n="Kingdom Progress">${t("Kingdom Progress")}</b><small>${R.icon} ${R.name}</small>${bar(kp, Math.round(kp * 100) + "%")}</span><span class="circ">›</span></div>
+    <div class="homeplay">
+      <button class="kstrip" data-nav="kingdom"><span class="ki">${R.icon}</span><span class="kt"><b>${R.name}</b>${bar(kp, Math.round(kp * 100) + "% restored")}</span><span class="circ">›</span></button>
+      <button class="playbtn" data-nav="play"><b>${done ? "All done!" : t("Level") + " " + fmt(S.level)}</b><span style="color:${L.difficulty ? "#fff3a0" : "#fff"}">${done ? "Try Challenges" : L.boss ? "👑 Boss battle" : dc.name}</span></button>
+    </div>
   </div>
   ${installBanner()}`;
   wireInstall(el);
   refreshBadges();
 }
-function rb(id, e, l) { return `<button class="rbtn" data-nav="${id}" data-badge="${id}"><span class="ic">${e}</span><span class="lb" data-i18n="${l}">${t(l)}</span></button>`; }
+function rb(id, e, l, tm) { return `<button class="rbtn" data-nav="${id}" data-badge="${id}"><span class="ic">${e}</span><span class="lb" data-i18n="${l}">${t(l)}</span>${tm ? `<span class="tmr">${tm}</span>` : ""}</button>`; }
 function nextMidnight() { const d = new Date(); d.setHours(24, 0, 0, 0); return d.getTime(); }
 function kingdomPct(ri) {
   const start = ri * D.PER_REGION + 1;
@@ -2486,7 +2648,7 @@ async function levelStart(n) {
   const m = modal({ title: `${t("Level")} ${n}`, html: `<div style="text-align:center;margin:-6px 0 8px"><span class="badge" style="background:${dc.color}">${dc.name}</span> <span class="badge" style="background:#3a2670">${R.icon} ${R.name}</span>${L.treasure ? ' <span class="badge" style="background:#b8801f">🗝️ Treasure stage</span>' : ""}</div>
     <div class="inner"><b>${t("Objectives")}</b><div class="row wrap" style="justify-content:center;margin:6px 0">${objHTML}</div>
     <p class="muted" style="text-align:center">${L.boss ? `Defeat <b>${L.boss.name}</b> in ${L.moves} moves! Every gem you clear hurts it; breaking obstacles hurts more.` : `${L.moves} moves`}${S.best[n] ? ` · Best: ${"⭐".repeat(S.best[n].stars)} ${fmt(S.best[n].score)}` : ""}</p>
-    ${n >= 4 ? `<b>Pre-level boosters</b><div class="row" style="justify-content:center;gap:8px;margin-top:6px">${preIds.map(id => `<button class="tile-card" data-pre="${id}" style="width:86px" aria-pressed="false"><div class="em">${D.BOOSTERS[id].icon}</div><div class="nm">${D.BOOSTERS[id].name}</div><span class="q">${S.boosters[id] || 0}</span></button>`).join("")}</div><p class="muted" style="text-align:center">Tap to add. Used only when you press Play.</p>` : ""}</div>`,
+    ${n >= 4 ? `<b>Pre-level boosters</b><div class="row" style="justify-content:center;gap:8px;margin-top:6px">${preIds.map(id => `<button class="tile-card preb" data-pre="${id}" style="width:86px" aria-pressed="false"><div class="em">${A.boostPic(id)}</div><div class="nm">${D.BOOSTERS[id].name}</div><span class="q">${S.boosters[id] || 0}</span></button>`).join("")}</div><p class="muted" style="text-align:center">Tap to add. Used only when you press Play.</p>` : ""}</div>`,
     buttons: [{ label: `▶ ${t("Play")}`, cls: "", onClick: api => { api.close(); beginLevel(L, Object.keys(pre).filter(k => pre[k])); } }] });
   $$("[data-pre]", m.el).forEach(b => b.onclick = async () => {
     const id = b.dataset.pre;
@@ -2503,9 +2665,7 @@ function objIcon(o, L, rem) {
   else if (o.t === "relic") ic = A.relic();
   else if (o.t === "score") ic = `<span class="em">⭐</span>`;
   else if (o.t === "boss") ic = `<span class="em">${L.boss ? L.boss.face : "👹"}</span>`;
-  else if (o.t === "ice") ic = `<span class="em">🧊</span>`;
-  else if (o.t === "portal") ic = `<span class="em">🌀</span>`;
-  else ic = A.obstacle(o.t, o.t === "lock" ? 2 : 1, 1);
+    else ic = A.obstacle(o.t, o.t === "lock" ? 2 : 1, 1);
   let n = rem != null ? rem : o.n != null ? o.n : (L.obstacles || []).filter(x => x.t === o.t).length;
   if (o.t === "boss" && rem == null) n = L.boss.hp;
   const label = o.t === "color" ? E.GEMS[o.c] : o.t === "relic" ? "Relics" : o.t === "boss" ? "Boss HP" : (E.OBST[o.t] || { label: o.t }).label;
@@ -2522,7 +2682,7 @@ function story(ri, lines) {
       if (i >= lines.length) { m.close(); return; }
       const [who, txt] = lines[i];
       SND.play("voice", who === "lumi" ? 1 : 0);
-      m.set(`<div class="dlg"><div class="who">${who === "lumi" ? A.CAT : A.PRINCE}</div><div class="say"><b>${who === "lumi" ? "Lumi" : "Prince Aurelio"}</b>${esc(txt)}</div></div><p class="muted" style="text-align:center">Chapter ${ri + 1} · ${i + 1}/${lines.length}</p>`,
+      m.set(`<div class="dlg"><div class="who">${A.portrait(who, /!|\?/.test(txt) && who === "lumi" ? "happy" : "")}</div><div class="say"><b>${who === "lumi" ? "Lumi" : "Prince Aurelio"}</b>${esc(txt)}</div></div><p class="muted" style="text-align:center">Chapter ${ri + 1} · ${i + 1}/${lines.length}</p>`,
         [{ label: "Skip story", cls: "ghost", onClick: () => m.close() }, { label: i === lines.length - 1 ? "Let's go!" : "Next ›", cls: "gold", onClick: () => { i++; step(); } }]);
     };
     step();
@@ -2559,8 +2719,8 @@ function tabs(list, cur) { return `<div class="tabs" role="tablist">${list.map((
 
 const PAGES = {};
 PAGES.boosters = () => {
-  const inv = Object.entries(D.BOOSTERS).map(([id, b]) => `<div class="card row"><span style="font-size:40px">${b.icon}</span><div class="grow"><h4>${b.name} <span class="badge" style="background:#8866C8">×${S.boosters[id] || 0}</span></h4><p>${b.desc}</p><p class="muted">${b.kind === "pre" ? "Pre-level: pick it on the level start screen." : "In-level: tap it on the booster bar, then tap the board. Doesn't use a move."}</p></div><button class="btn sm gold" data-buy="${id}">${A.coinSvg().replace('class="ico"', 'class="ico" style="width:18px;height:18px"')} ${fmt(b.price)}</button></div>`).join("");
-  const hist = S.boosterLog.slice(0, 20).map(h => `<div class="li"><span class="e">${D.BOOSTERS[h.id].icon}</span><span class="grow"><b>${h.n > 0 ? "+" : ""}${h.n} ${D.BOOSTERS[h.id].name}</b><br><small>${esc(h.why)} · ${new Date(h.at).toLocaleString()}</small></span></div>`).join("") || `<p class="muted">No booster activity yet.</p>`;
+  const inv = Object.entries(D.BOOSTERS).map(([id, b]) => `<div class="card row"><span class="bigic">${A.boostPic(id)}</span><div class="grow"><h4>${b.name} <span class="badge" style="background:#8866C8">×${S.boosters[id] || 0}</span></h4><p>${b.desc}</p><p class="muted">${b.kind === "pre" ? "Pre-level: pick it on the level start screen." : "In-level: tap it on the booster bar, then tap the board. Doesn't use a move."}</p></div><button class="btn sm gold" data-buy="${id}">${A.coinSvg().replace('class="ico"', 'class="ico" style="width:18px;height:18px"')} ${fmt(b.price)}</button></div>`).join("");
+  const hist = S.boosterLog.slice(0, 20).map(h => `<div class="li"><span class="e">${A.boostPic(h.id)}</span><span class="grow"><b>${h.n > 0 ? "+" : ""}${h.n} ${D.BOOSTERS[h.id].name}</b><br><small>${esc(h.why)} · ${new Date(h.at).toLocaleString()}</small></span></div>`).join("") || `<p class="muted">No booster activity yet.</p>`;
   return { title: "💣 " + t("Boosters"), html: inv + `<h3>History</h3><div class="list">${hist}</div>`,
     wire: el => $$("[data-buy]", el).forEach(b => b.onclick = async () => { const id = b.dataset.buy; if (await spend("coins", D.BOOSTERS[id].price, `Buy 1 ${D.BOOSTERS[id].name}`)) { S.boosters[id] = (S.boosters[id] || 0) + 1; logBooster(id, 1, "Bought in shop"); save(); SND.play("coin"); renderPage(); } }) };
 };
@@ -2570,10 +2730,10 @@ PAGES.shop = () => {
   return { title: "🛒 " + t("Shop"), html: `<div class="card dark"><p>✨ <b>No real-money purchases.</b> Everything here costs coins or crystals you earn by playing.</p></div>
     <div class="card row"><span style="font-size:40px">🎁</span><div class="grow"><h4>Free gift</h4><p>${giftReady ? "50 coins + 1 Royal Shuffle, free every 4 hours." : "Next free gift in " + dur(4 * 3600e3 - (Date.now() - S.gift))}</p></div><button class="btn sm" id="gift" ${giftReady ? "" : "disabled"}>Claim</button></div>
     <h3>Lives</h3>
-    <div class="card row"><span style="font-size:36px">❤️</span><div class="grow"><h4>Refill lives</h4><p>Back to 5 lives.</p></div><button class="btn sm gold" data-sh="refill">12 💎</button></div>
+    <div class="card row"><span class="bigic">${A.heartPic()}</span><div class="grow"><h4>Refill lives</h4><p>Back to 5 lives.</p></div><button class="btn sm gold" data-sh="refill">12 💎</button></div>
     <div class="card row"><span style="font-size:36px">♾️</span><div class="grow"><h4>Unlimited lives · 1 hour</h4><p>Play without losing lives.</p></div><button class="btn sm gold" data-sh="unl">25 💎</button></div>
     <h3>Chests</h3>
-    ${[["wooden", 300, "coins"], ["silver", 800, "coins"], ["golden", 1600, "coins"], ["crystal", 40, "crystals"]].map(([c, p, cur]) => `<div class="card row"><span style="font-size:36px">${D.CHESTS[c].icon}</span><div class="grow"><h4>${D.CHESTS[c].name}</h4><p>${D.CHESTS[c].rolls} rewards · <a href="#" data-odds="${c}">drop rates</a></p></div><button class="btn sm gold" data-chest="${c}" data-p="${p}" data-cur="${cur}">${fmt(p)} ${cur === "coins" ? "🪙" : "💎"}</button></div>`).join("")}
+    ${[["wooden", 300, "coins"], ["silver", 800, "coins"], ["golden", 1600, "coins"], ["crystal", 40, "crystals"]].map(([c, p, cur]) => `<div class="card row"><span class="bigic">${A.chestPic(c)}</span><div class="grow"><h4>${D.CHESTS[c].name}</h4><p>${D.CHESTS[c].rolls} rewards · <a href="#" data-odds="${c}">drop rates</a></p></div><button class="btn sm gold" data-chest="${c}" data-p="${p}" data-cur="${cur}">${fmt(p)} ${cur === "coins" ? "🪙" : "💎"}</button></div>`).join("")}
     <h3>Exchange</h3>
     <div class="card row"><span style="font-size:36px">🪙</span><div class="grow"><h4>1,000 coins</h4><p>Swap crystals for coins.</p></div><button class="btn sm gold" data-sh="ex">10 💎</button></div>
     <h3>Cosmetics</h3>
@@ -2599,9 +2759,9 @@ PAGES.events = () => {
     const es = eventState(ev);
     if (ev.tournament) return `<div class="card" style="border-color:${ev.color}"><div class="row"><span style="font-size:40px">${ev.icon}</span><div class="grow"><h4>${ev.name}</h4><p>${ev.desc}</p><p class="muted">Ends in ${dur(ev.end - Date.now())}</p></div></div><button class="btn blue full" data-nav="tournament">Open tournament</button></div>`;
     const next = D.EVENT_MILESTONES.find(M => M.pts > es.pts);
-    return `<div class="card" style="border-color:${ev.color}"><div class="row"><span style="font-size:40px">${ev.icon}</span><div class="grow"><h4>${ev.name}</h4><p>${ev.desc}</p><p class="muted">⏱ Ends in ${dur(ev.end - Date.now())} · Started ${new Date(ev.start).toLocaleDateString()}</p></div><b style="font-size:22px">${es.pts}</b></div>
+    return `<div class="card" style="border-color:${ev.color}"><div class="evhero" style="background:linear-gradient(180deg,${ev.color},#3a2670)"><h3>${ev.name}</h3>${A.portrait("prince", "cheer")}${A.chestPic(ev.id === "dragon" ? "legendary" : ev.id === "treasurehunt" ? "open" : "golden")}</div><div class="row"><span style="font-size:40px">${ev.icon}</span><div class="grow"><h4>${ev.name}</h4><p>${ev.desc}</p><p class="muted">⏱ Ends in ${dur(ev.end - Date.now())} · Started ${new Date(ev.start).toLocaleDateString()}</p></div><b style="font-size:22px">${es.pts}</b></div>
       ${bar(next ? es.pts / next.pts : 1, next ? `${es.pts}/${next.pts} pts` : "All milestones reached!")}
-      <div class="mile">${D.EVENT_MILESTONES.map((M, i) => { const got = es.claimed.includes(i), ok = es.pts >= M.pts; return `<div class="m ${ok ? "ok" : ""} ${got ? "got" : ""}"><div style="font-size:24px">${rewardIcon(M.r)}</div>${M.pts} pts<br>${got ? "✔" : ok ? `<button class="btn sm" data-ms="${ev.key}|${i}">${t("Claim")}</button>` : esc(rewardText(M.r))}</div>`; }).join("")}</div>
+      <div class="track"><div class="tbar"><i style="width:${Math.min(100, es.pts / 120 * 100)}%"></i></div>${D.EVENT_MILESTONES.map((M, i) => { const got = es.claimed.includes(i), ok = es.pts >= M.pts; return `<div class="tn ${got ? "got" : ""}" style="left:${8 + M.pts / 120 * 84}%">${rewardIcon(M.r)}<div>${M.pts}</div>${got ? '<span class="ok">✅</span>' : ok ? `<button class="btn sm" data-ms="${ev.key}|${i}">${t("Claim")}</button>` : ""}</div>`; }).join("")}</div>
       <p class="muted">Rules: points come from campaign and challenge levels played while the event is live. Leaderboard: personal only in this offline version.</p></div>`;
   }).join("");
   return { title: "🎪 " + t("Events"), html: `<div class="card dark"><p>Events run on a schedule on your device: a new 3-day event every 3 days, Weekend Adventure Fri–Sun, a monthly seasonal festival and a weekly tournament.</p></div>${html}<button class="btn gold full" data-nav="modes">⚔️ ${t("Challenge Modes")}</button>`,
@@ -2744,7 +2904,7 @@ PAGES.help = (tab) => {
     ["⭐", "Earn stars", "Win with 30%+ moves left for ★★★, 10%+ (or 3 moves) for ★★. Spend stars on Kingdom restoration."],
     ["🗺️", "Unlock regions", "Beat the boss at level 20 of each region to open the next one. Each region brings new obstacles."],
   ];
-  const ob = Object.entries(E.OBST).map(([k, o]) => `<div class="li"><span class="e" style="width:44px">${k === "ice" ? "🧊" : k === "portal" ? "🌀" : A.obstacle(k, 1, 1)}</span><span class="grow"><b>${o.label}</b><br><small>${{ stone: "Blocks a cell. Match next to it or hit it with power-ups. Can have 1–3 layers (multi-layer crystal).", vine: "Blocks a cell and grows each turn you don't damage a vine.", chest: "Two hits from adjacent matches; drops coins.", shadow: "Only power-ups and the Royal Hammer can crack it.", cage: "Locks a gem in place. Match the caged gem to break it.", lock: "Like a cage, but needs two hits.", resin: "Sticky resin holds a gem. Match it or next to it.", ice: "Frozen floor under gems; clear gems on top (1–2 layers).", portal: "Clear a gem standing on it to activate it." }[k]}</small></span></div>`).join("") +
+  const ob = Object.entries(E.OBST).map(([k, o]) => `<div class="li"><span class="e" style="width:44px">${A.obstacle(k, 1, 1)}</span><span class="grow"><b>${o.label}</b><br><small>${{ stone: "Blocks a cell. Match next to it or hit it with power-ups. Can have 1–3 layers (multi-layer crystal).", vine: "Blocks a cell and grows each turn you don't damage a vine.", chest: "Two hits from adjacent matches; drops coins.", shadow: "Only power-ups and the Royal Hammer can crack it.", cage: "Locks a gem in place. Match the caged gem to break it.", lock: "Like a cage, but needs two hits.", resin: "Sticky resin holds a gem. Match it or next to it.", ice: "Frozen floor under gems; clear gems on top (1–2 layers).", portal: "Clear a gem standing on it to activate it." }[k]}</small></span></div>`).join("") +
     `<div class="li"><span class="e" style="width:44px">${A.relic()}</span><span class="grow"><b>Ancient Relic</b><br><small>Can't be matched. Clear gems beneath it so it falls to the bottom row to collect it.</small></span></div>`;
   const faq = [
     ["Do I need to pay?", "No. There are no real-money purchases. Coins and crystals are earned by playing."],
@@ -2940,17 +3100,17 @@ function buildGame() {
   const el = $("#scr-game");
   el.innerHTML = `<div class="gbg" style="background:linear-gradient(180deg,${R.sky[2]},${R.sky[1]} 55%,${R.ground})"></div>
   <div class="gwrap">
-    <div class="gtop">
-      <button class="gbox gpause" id="gPause" aria-label="Pause">⏸</button>
-      <div class="gbox gmoves" id="gMoves" aria-live="polite"><b>0</b><small data-i18n="Moves">${t("Moves")}</small></div>
-      <div class="gbox gobj" id="gObj" aria-label="${t("Objectives")}"></div>
+    <div class="ghead">
+      <div class="gpanel"><div class="gptitle" data-i18n="Objectives">Target</div><div class="gobj" id="gObj" aria-label="${t("Objectives")}"></div></div>
+      <div class="gportrait" id="gPortrait">${GL.boss ? `<div class="bossface">${GL.boss.face}</div>` : A.portrait("prince", "happy")}</div>
+      <div class="gpanel gmoves" id="gMoves" aria-live="polite"><div class="gptitle" data-i18n="Moves">${t("Moves")}</div><b>0</b></div>
     </div>
     <div class="gscore"><span id="gScore">0</span><div class="bar"><i id="gScoreBar"></i></div><span id="gLvl">${GL.mode ? D.MODES.find(m => m.id === GL.mode).icon : "Lv " + GL.id}</span></div>
-    ${GL.boss ? `<div class="bossbar" id="gBoss">${A.bossArt(GL.boss.face)}<div class="grow"><b style="font-size:13px">${esc(GL.boss.name)}</b><div class="bar"><i></i><span></span></div></div></div>` : ""}
+    ${GL.boss ? `<div class="bossbar" id="gBoss"><div class="grow"><b style="font-size:13px">${esc(GL.boss.name)}</b><div class="bar"><i></i><span></span></div></div></div>` : ""}
     <div class="boardwrap" id="gWrap"><div class="board" id="gBoard" role="grid" aria-label="Game board" tabindex="0"><div class="cells"></div><div class="tiles"></div><div class="fx"></div><div class="cursor"></div></div></div>
-    <div class="gboost" id="gBoost">${BOOST_BAR.map(id => `<button data-bo="${id}" aria-label="${D.BOOSTERS[id].name}">${D.BOOSTERS[id].icon}<span class="q"></span></button>`).join("")}</div>
+    <div class="gboost" id="gBoost">${BOOST_BAR.map(id => `<button data-bo="${id}" aria-label="${D.BOOSTERS[id].name}">${A.boostPic(id)}<span class="q"></span></button>`).join("")}<button class="gear2" id="gPause" aria-label="Pause">⚙️</button></div>
   </div>
-  <div class="bubble" id="gBubble">${A.CAT}<div class="say"></div></div>`;
+  <div class="bubble" id="gBubble">${A.portrait("lumi", "happy", "catp")}<div class="say"></div></div>`;
   tileEls = new Map(); obEls = new Map();
   $("#gPause").onclick = () => { SND.play("click"); pauseMenu(); };
   $$("[data-bo]").forEach(b => b.onclick = () => useBooster(b.dataset.bo));
@@ -2988,7 +3148,8 @@ function render(instant) {
   // floor layers
   $$(".cell", $("#gBoard")).forEach(d => {
     const [r, c] = d.dataset.rc.split(",").map(Number); const f = G.cells[r][c].floor;
-    d.classList.toggle("ice", !!f && f.type === "ice"); d.classList.toggle("ice2", !!f && f.type === "ice" && f.hp >= 2); d.classList.toggle("portal", !!f && f.type === "portal");
+    const fs = f ? f.type + f.hp : "";
+    if (d.dataset.f !== fs) { d.dataset.f = fs; d.innerHTML = f ? A.obstacle(f.type, f.hp, f.max) : ""; d.classList.toggle("ice2", !!f && f.type === "ice" && f.hp >= 2); d.classList.toggle("fl", !!f); }
   });
   G.each((x, r, c) => {
     if (x.hole) return;
@@ -3011,6 +3172,7 @@ function render(instant) {
       let start = r - 1; el.style.transform = pos(tt.spawn ? start : r, c);
       tl.appendChild(el); tileEls.set(tt.id, el);
       el.style.animationDelay = ((r * 7 + c * 3) % 40) / 10 + "s";
+      if (tt.born) { el.classList.add("new"); tt.born = false; }
       void el.offsetWidth;
       tt.spawn = false;
     }
@@ -3133,6 +3295,7 @@ async function settle() {
   for (let k = 0; k < 60; k++) {
     let moved = false;
     while (G.gravityStep()) { moved = true; render(); await sleep(animMs(80)); }
+    if (G.fillStuck()) { render(); await sleep(animMs(200)); continue; }
     if (G.collectRelics()) { playFx(); render(); await sleep(animMs(220)); continue; }
     break;
   }
@@ -3158,8 +3321,17 @@ async function endTurn() {
   armHint();
 }
 let lastSay = 0;
+let moodT = null;
+function mood(m, ms) {
+  const p = $("#gPortrait"); if (!p || GL.boss) return;
+  const set = x => { if (p.dataset.m === x) return; p.dataset.m = x; p.innerHTML = A.portrait("prince", x); p.classList.remove("bump"); void p.offsetWidth; p.classList.add("bump"); };
+  set(m); clearTimeout(moodT);
+  if (ms) moodT = setTimeout(() => set(G && !GL.endless && G.moves <= 5 ? "worried" : "happy"), ms);
+}
 function reactions() {
+  if (G && !GL.endless && G.moves <= 5) mood("worried");
   const c = G.stats.maxCascade;
+  if (G.cascade >= 3) mood("cheer", 1800);
   if (G.cascade >= 4 && Date.now() - lastSay > 4000) { say(["Wonderful!", "Amazing chain!", "Purrfect!", "Spectacular!"][Math.floor(Math.random() * 4)]); }
   else if (!GL.endless && G.moves === 3 && Date.now() - lastSay > 4000) say("Only 3 moves left — aim for the objectives!");
 }
@@ -3187,7 +3359,7 @@ function playFx() {
       case "orb": { SND.play("orb"); for (const [r, c] of f.cells.slice(0, 30)) { const d = document.createElement("div"); d.className = "bolt"; const x0 = cx(f.c), y0 = cy(f.r), x1 = cx(c), y1 = cy(r); Object.assign(d.style, { left: x0 + "px", top: y0 + "px", width: Math.hypot(x1 - x0, y1 - y0) + "px", transform: `rotate(${Math.atan2(y1 - y0, x1 - x0)}rad)` }); fx.appendChild(d); setTimeout(() => d.remove(), 500); } break; }
       case "spark": { SND.play("spark"); const d = document.createElement("div"); d.className = "fly"; d.textContent = "🧚"; d.style.transform = `translate(${cx(f.c) - 14}px,${cy(f.r) - 18}px)`; fx.appendChild(d); requestAnimationFrame(() => requestAnimationFrame(() => (d.style.transform = `translate(${cx(f.tc) - 14}px,${cy(f.tr) - 18}px)`))); setTimeout(() => d.remove(), 600); break; }
       case "star": case "nova": { SND.play("orb"); SND.play("boom"); vibe([30, 40, 60]); const d = document.createElement("div"); d.className = "flash"; fx.appendChild(d); setTimeout(() => d.remove(), 700); shake(3); break; }
-      case "combo": { banner({ cross: "Cross Blast!", cross3: "Mega Cross!", bigcore: "Dragon Fury!", nova: "Celestial Nova!", convert: "Orb Fusion!", spark: "Spark Strike!", triplespark: "Fairy Swarm!" }[f.name] || "Combo!"); vibe(50); break; }
+      case "combo": { mood("cheer", 2000); banner({ cross: "Cross Blast!", cross3: "Mega Cross!", bigcore: "Dragon Fury!", nova: "Celestial Nova!", convert: "Orb Fusion!", spark: "Spark Strike!", triplespark: "Fairy Swarm!" }[f.name] || "Combo!"); vibe(50); break; }
       case "crack": SND.play("crack"); break;
       case "break": SND.play("break"); if (parts) particles(cx(f.c), cy(f.r), "#c8ccd8", 6); break;
       case "coins": SND.play("coin"); break;
@@ -3255,7 +3427,7 @@ function tutorial(T) {
   const left = b.left - sr.left + c0 * TS - 4, top = b.top - sr.top + r0 * TS - 4;
   tutEl.innerHTML = `<div class="hole" style="left:${left}px;top:${top}px;width:${(c1 - c0 + 1) * TS + 8}px;height:${(r1 - r0 + 1) * TS + 8}px"></div>
     <div class="hand" style="left:${left + TS / 2}px;top:${top + TS / 2}px;--hx:${(forced.b[1] - forced.a[1]) * TS}px;--hy:${(forced.b[0] - forced.a[0]) * TS}px">👆</div>
-    <div class="msg">${A.CAT}<div class="say">${esc(msg)}</div></div><button class="btn sm ghost skip">Skip tutorial</button>`;
+    <div class="msg">${A.portrait("lumi", "happy", "catp")}<div class="say">${esc(msg)}</div></div><button class="btn sm ghost skip">Skip tutorial</button>`;
   $("#scr-game").appendChild(tutEl);
   SND.play("voice", 1);
   $(".skip", tutEl).onclick = () => { S.flags.tut = { 1: 1, 2: 1, 3: 1, booster: 1 }; save(); endTutorialStep(true); };
@@ -3269,7 +3441,7 @@ function endTutorialStep(skipped) {
 }
 function boosterTutorial() {
   S.flags.tut.booster = 1; if (!(S.boosters.hammer > 0)) S.boosters.hammer = 1; save(); hud();
-  modal({ title: "🔨 Boosters", html: `<div class="dlg"><div class="who">${A.CAT}</div><div class="say"><b>Lumi</b>Stuck? Boosters at the bottom help! Tap the Royal Hammer, then tap any tile to smash it. Boosters never cost a move.</div></div>`, buttons: [{ label: "Got it!", cls: "gold" }] });
+  modal({ title: "Boosters", html: `<div class="dlg"><div class="who">${A.portrait("lumi", "happy")}</div><div class="say"><b>Lumi</b>Stuck? Boosters at the bottom help! Tap the Royal Hammer, then tap any tile to smash it. Boosters never cost a move.</div></div>`, buttons: [{ label: "Got it!", cls: "gold" }] });
 }
 async function obstacleIntro() {
   const types = [...new Set((GL.obstacles || []).map(o => o.t))];
@@ -3278,7 +3450,7 @@ async function obstacleIntro() {
     if (S.flags.seenOb[ty]) continue;
     S.flags.seenOb[ty] = 1; save();
     const info = { cage: "Crystal Cages lock a gem in place. Match the caged gem to shatter the cage.", ice: "Frozen floors hide under gems. Clear the gems on top to melt them — some take two hits.", stone: "Stone Barriers block cells. Make matches right next to them. Some have up to 3 layers!", relic: "Ancient Relics can't be matched. Clear the gems under them so they fall to the bottom row.", chest: "Ancient Chests take two hits from matches next to them — and drop coins!", resin: "Magic Resin holds a gem. Match that gem or match right next to it.", lock: "Magical Locks are tougher cages: they need two hits.", vine: "Enchanted Vines grow every turn you don't damage one. Trim them fast!", portal: "Sealed Portals sleep under gems. Clear the gem standing on one to wake it.", shadow: "Shadow Crystals ignore normal matches. Only power-ups (or the Royal Hammer) can break them." }[ty];
-    const art = ty === "relic" ? A.relic() : ty === "ice" ? '<div style="font-size:70px">🧊</div>' : ty === "portal" ? '<div style="font-size:70px">🌀</div>' : A.obstacle(ty, ty === "lock" || ty === "chest" ? 2 : 1, 2);
+    const art = ty === "relic" ? A.relic() : A.obstacle(ty, ty === "lock" || ty === "chest" ? 2 : 1, 2);
     await new Promise(res => modal({ title: "New obstacle!", html: `<div class="inner" style="text-align:center"><div style="width:90px;height:90px;margin:0 auto">${art}</div><h3 style="margin:6px 0">${ty === "relic" ? "Ancient Relic" : E.OBST[ty].label}</h3><p>${info}</p></div>`, buttons: [{ label: "Got it!", cls: "gold" }], onClose: res }));
   }
 }
@@ -3316,7 +3488,7 @@ function finishRun(won) {
 }
 async function victory() {
   busy = true; disarmHint();
-  SND.play("win"); banner(t("Victory"));
+  SND.play("win"); banner(t("Victory")); mood("cheer");
   await sleep(animMs(1100));
   // Royal Finale: unused moves become beams
   const left = Math.max(0, G.moves);
@@ -3385,7 +3557,7 @@ async function victory() {
 async function outOfMoves() {
   busy = true; disarmHint();
   if (GL.endless) { return modeOver(); }
-  SND.play("lose");
+  SND.play("lose"); mood("worried");
   const remaining = G.objectives.map(o => objIcon(o, GL, G.objRemaining(o))).join("");
   const have = S.boosters.moves5 || 0;
   const choice = await new Promise(res => {
@@ -3400,7 +3572,7 @@ async function outOfMoves() {
   loseLife(); S.stats.losses++; S.stats.streak = 0;
   finishRun(false); try { localStorage.removeItem("gk_inlevel"); } catch (e) {}
   save(true);
-  modal({ title: "💔 Level failed", noClose: true, html: `<div class="dlg"><div class="who">${A.CAT}</div><div class="say"><b>Lumi</b>Don't give up! Try aiming power-ups at the objectives.</div></div>
+  modal({ title: "💔 Level failed", noClose: true, html: `<div class="dlg"><div class="who">${A.portrait("prince", "worried")}</div><div class="say"><b>Prince Aurelio</b>Don't give up! Try aiming power-ups at the objectives.</div></div>
     <div class="inner" style="text-align:center;margin-top:8px"><p>Remaining objectives:</p><div class="row wrap" style="justify-content:center">${remaining}</div><p class="muted">−1 life · ${unlimited() ? "Unlimited lives active" : `${S.lives} lives left${S.lives < MAX_LIVES ? " · next in " + dur(nextLifeIn()) : ""}`}</p></div>`,
     buttons: [{ label: "🗺️ " + t("Map"), cls: "blue", onClick: api => { api.close(); leaveGame(); } }, { label: "↻ " + t("Retry"), cls: "", onClick: api => { api.close(); const L = GL; leaveGame(); if (L.mode) beginLevel(D.makeMode(L.mode), []); else setTimeout(() => levelStart(L.id), 100); } }] });
 }
@@ -3443,7 +3615,7 @@ victory = async function () {
 
 /* ---------------- boot ---------------- */
 async function boot() {
-  document.body.insertAdjacentHTML("afterbegin", A.defs());
+  document.body.insertAdjacentHTML("afterbegin", A.defs()); A.preload();
   const st = await load();
   buildChrome();
   ensureMissions();
